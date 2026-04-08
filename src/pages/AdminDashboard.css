@@ -172,3 +172,18 @@
   .admin-brand { display: none; }
   .sidebar-btn { width: auto; }
 }
+
+.img-upload-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.img-preview {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+}

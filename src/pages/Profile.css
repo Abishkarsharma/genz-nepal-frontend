@@ -111,3 +111,15 @@
   .profile-header { flex-direction: column; text-align: center; }
   .profile-stats { grid-template-columns: repeat(2, 1fr); }
 }
+
+.avatar-upload-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.upload-status {
+  font-size: 0.85rem;
+  color: #16a34a;
+  font-weight: 500;
+}
