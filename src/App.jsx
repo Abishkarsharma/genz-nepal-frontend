@@ -15,6 +15,10 @@ import SellerDashboard from './pages/SellerDashboard';
 import Profile from './pages/Profile';
 import ForgotPassword from './pages/ForgotPassword';
 import PaymentSuccess from './pages/PaymentSuccess';
+import AboutUs from './pages/AboutUs';
+import Contact from './pages/Contact';
+import ShippingPolicy from './pages/ShippingPolicy';
+import TermsOfService from './pages/TermsOfService';
 
 export default function App() {
   return (
@@ -41,6 +45,12 @@ export default function App() {
 
           {/* Seller (and admin) */}
           <Route path="/seller" element={<ProtectedRoute role="seller"><SellerDashboard /></ProtectedRoute>} />
+
+          {/* Public info pages */}
+          <Route path="/about" element={<AboutUs />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/shipping-policy" element={<ShippingPolicy />} />
+          <Route path="/terms" element={<TermsOfService />} />
         </Routes>
       </main>
       <Footer />

@@ -1,0 +1,59 @@
+.about-hero {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  color: white;
+  padding: 6rem 1rem;
+  text-align: center;
+}
+.about-hero-content { max-width: 680px; margin: 0 auto; }
+.about-tag {
+  display: inline-block;
+  background: var(--primary);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.3rem 1rem;
+  border-radius: 999px;
+  margin-bottom: 1.5rem;
+}
+.about-hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 1.25rem; line-height: 1.2; }
+.about-hero p { font-size: 1.1rem; opacity: 0.85; max-width: 520px; margin: 0 auto; }
+
+.about-section { padding: 5rem 1rem; }
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+.about-text h2 { font-size: 2rem; margin-bottom: 1rem; }
+.about-text p { color: var(--text-muted); line-height: 1.8; margin-bottom: 1rem; }
+.about-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.about-stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  text-align: center;
+}
+.about-stat span { font-size: 2rem; font-weight: 800; color: var(--primary); display: block; }
+.about-stat p { margin: 0.25rem 0 0; color: var(--text-muted); font-size: 0.9rem; }
+
+.about-values { background: var(--surface); padding: 5rem 1rem; }
+.values-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-top: 2.5rem; }
+.value-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.value-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+.value-icon { font-size: 2.5rem; display: block; margin-bottom: 1rem; }
+.value-card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+.value-card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; }
+
+.about-cta { padding: 5rem 1rem; text-align: center; }
+.about-cta h2 { font-size: 2rem; margin-bottom: 0.75rem; }
+.about-cta p { color: var(--text-muted); margin-bottom: 2rem; }
+
+@media (max-width: 768px) {
+  .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+}

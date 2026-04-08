@@ -12,13 +12,13 @@ export default function Footer() {
         </div>
         <div className="footer-col">
           <h4>Company</h4>
-          <Link to="/">About Us</Link>
-          <Link to="/">Contact</Link>
+          <Link to="/about">About Us</Link>
+          <Link to="/contact">Contact</Link>
         </div>
         <div className="footer-col">
           <h4>Policies</h4>
-          <Link to="/">Shipping Policy</Link>
-          <Link to="/">Terms of Service</Link>
+          <Link to="/shipping-policy">Shipping Policy</Link>
+          <Link to="/terms">Terms of Service</Link>
         </div>
         <div className="footer-col">
           <h4>Newsletter</h4>
