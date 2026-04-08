@@ -1,46 +1,113 @@
-.profile-page {
-  padding: 2rem 1rem;
-  display: flex;
-  justify-content: center;
-}
+.profile-page { padding: 2rem 1rem 4rem; max-width: 860px; margin: 0 auto; }
 
-.profile-card {
-  background: white;
-  border-radius: 20px;
-  padding: 2.5rem;
-  width: 100%;
-  max-width: 480px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-  text-align: center;
-}
-
-.profile-avatar {
-  margin-bottom: 1rem;
-}
-
-.avatar-img {
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid var(--purple);
-}
-
-.avatar-placeholder {
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
-  background: var(--purple);
-  color: white;
-  font-size: 2rem;
-  font-weight: 700;
+.profile-header {
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin: 0 auto;
+  gap: 2rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1.25rem;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
 }
+.profile-avatar-wrap { position: relative; flex-shrink: 0; }
+.profile-avatar-ring {
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  border: 3px solid var(--primary);
+  overflow: hidden;
+}
+.avatar-img { width: 100%; height: 100%; object-fit: cover; }
+.avatar-placeholder {
+  width: 100%; height: 100%;
+  background: var(--primary);
+  color: white;
+  font-size: 2.5rem;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.avatar-edit-btn {
+  position: absolute; bottom: 0; right: 0;
+  background: var(--primary); color: white;
+  border: none; border-radius: 50%;
+  width: 30px; height: 30px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.2s;
+}
+.avatar-edit-btn:hover { transform: scale(1.1); }
+.profile-header-info h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
+.profile-email { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.5rem; }
+.role-badge {
+  display: inline-block;
+  font-size: 0.75rem; font-weight: 600;
+  padding: 0.2rem 0.75rem;
+  border-radius: 999px;
+  text-transform: capitalize;
+}
+.role-admin { background: #fef3c7; color: #92400e; }
+.role-seller { background: #d1fae5; color: #065f46; }
+.role-user { background: #ede9fe; color: #5b21b6; }
 
-.profile-form {
-  text-align: left;
-  margin-top: 1.5rem;
+.profile-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.pstat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  text-align: center;
+}
+.pstat span { font-size: 1.4rem; font-weight: 800; color: var(--primary); display: block; }
+.pstat p { color: var(--text-muted); font-size: 0.8rem; margin: 0.25rem 0 0; }
+
+.profile-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0;
+}
+.profile-tab {
+  background: none; border: none;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.95rem; font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.2s, border-color 0.2s;
+}
+.profile-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+.profile-tab:hover { color: var(--primary); }
+
+.profile-form-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1.25rem;
+  padding: 2rem;
+}
+.profile-form-card h2 { font-size: 1.2rem; margin-bottom: 1.5rem; }
+.form-hint { color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.25rem; }
+
+.mini-orders { display: flex; flex-direction: column; gap: 0.75rem; }
+.mini-order {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.875rem 1rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+}
+.mini-order-id { font-weight: 600; font-size: 0.9rem; }
+.mini-order-date { color: var(--text-muted); font-size: 0.8rem; }
+.mini-order-total { font-weight: 700; font-size: 0.9rem; }
+
+@media (max-width: 640px) {
+  .profile-header { flex-direction: column; text-align: center; }
+  .profile-stats { grid-template-columns: repeat(2, 1fr); }
 }
