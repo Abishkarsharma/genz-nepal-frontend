@@ -2,7 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api';
 import { useCart } from '../context/CartContext';
+import ReviewSection from '../components/ReviewSection';
+import ContactSeller from '../components/ContactSeller';
 import './ProductDetail.css';
+
+const TAX_RATE = 0.13;
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -29,19 +33,46 @@ export default function ProductDetail() {
   if (loading) return <div className="spinner" style={{ marginTop: '4rem' }} />;
   if (!product) return null;
 
+  const vatPrice = Math.round(product.price * (1 + TAX_RATE));
+
   return (
     <div className="container detail-page">
       <button className="back-btn" onClick={() => navigate(-1)}>← Back</button>
+
       <div className="detail-grid">
         <div className="detail-img-wrap">
           <img src={product.image} alt={product.name} className="detail-img" />
           <span className="badge">{product.category}</span>
         </div>
+
         <div className="detail-info">
           <p className="detail-category">{product.category}</p>
           <h1 className="detail-name">{product.name}</h1>
-          <p className="detail-price">NPR {product.price.toLocaleString()}</p>
+
+          {/* VAT-inclusive price shown first */}
+          <div className="detail-price-block">
+            <p className="detail-price-vat">NPR {vatPrice.toLocaleString()} <span className="vat-label">incl. 13% VAT</span></p>
+            <p className="detail-price-base">Base: NPR {product.price.toLocaleString()}</p>
+          </div>
+
           <p className="detail-desc">{product.description}</p>
+
+          {/* Specifications */}
+          {product.specifications?.length > 0 && (
+            <div className="specs-table">
+              <h4>Specifications</h4>
+              <table>
+                <tbody>
+                  {product.specifications.map((s, i) => (
+                    <tr key={i}>
+                      <td className="spec-key">{s.key}</td>
+                      <td className="spec-val">{s.value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
 
           <div className="detail-stock">
             {product.stock > 0
@@ -70,6 +101,12 @@ export default function ProductDetail() {
           </button>
         </div>
       </div>
+
+      {/* Contact Seller */}
+      <ContactSeller product={product} />
+
+      {/* Reviews */}
+      <ReviewSection productId={id} />
     </div>
   );
 }

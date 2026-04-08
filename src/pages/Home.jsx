@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import api from '../api';
 import ProductCard from '../components/ProductCard';
+import BarcodeSearch from '../components/BarcodeSearch';
 import './Home.css';
 
 const CATEGORIES = ['All', 'Accessories', 'Home', 'Electronics', 'Stationery', 'Wellness'];
@@ -16,7 +17,7 @@ export default function Home() {
         const url = activeCategory === 'All'
           ? '/api/products'
           : `/api/products?category=${activeCategory}`;
-    const { data } = await api.get(url);
+        const { data } = await api.get(url);
         setProducts(data);
       } catch (err) {
         console.error(err);
@@ -27,9 +28,11 @@ export default function Home() {
     fetchProducts();
   }, [activeCategory]);
 
+  const featured = products.slice(0, 4);
+
   return (
     <div>
-      {/* Hero */}
+      {/* Hero / Promo Banner */}
       <section className="hero">
         <div className="container hero-content">
           <p className="hero-tag">New Collection</p>
@@ -39,8 +42,23 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Categories */}
-      <section className="container" style={{ marginTop: '2rem' }}>
+      {/* Featured Products */}
+      {featured.length > 0 && (
+        <section className="container featured-section">
+          <h2 className="section-title">Featured Picks</h2>
+          <div className="product-grid">
+            {featured.map((p) => <ProductCard key={p._id} product={p} />)}
+          </div>
+        </section>
+      )}
+
+      {/* Barcode Search */}
+      <section className="container" style={{ marginTop: '1.5rem' }}>
+        <BarcodeSearch />
+      </section>
+
+      {/* Category Tabs */}
+      <section className="container" style={{ marginTop: '0.5rem' }}>
         <div className="category-tabs">
           {CATEGORIES.map((cat) => (
             <button
@@ -54,10 +72,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Products */}
+      {/* All Products */}
       <section id="products" className="container" style={{ marginTop: '1.5rem', paddingBottom: '3rem' }}>
         <div className="section-header">
-          <h2 className="page-title">Featured Selections</h2>
+          <h2 className="page-title">All Products</h2>
           <p className="page-subtitle">Handpicked for your lifestyle</p>
         </div>
 

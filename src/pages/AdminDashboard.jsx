@@ -19,6 +19,7 @@ export default function AdminDashboard() {
             { key: 'products', label: '📦 Products' },
             { key: 'orders', label: '🛒 Orders' },
             { key: 'users', label: '👥 Users' },
+            { key: 'messages', label: '💬 Messages' },
           ].map((item) => (
             <button
               key={item.key}
@@ -35,6 +36,7 @@ export default function AdminDashboard() {
         {tab === 'products' && <Products token={token} />}
         {tab === 'orders' && <Orders token={token} />}
         {tab === 'users' && <Users token={token} />}
+        {tab === 'messages' && <Messages token={token} />}
       </main>
     </div>
   );
@@ -297,6 +299,45 @@ function Users({ token }) {
             </tbody>
           </table>
         </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Messages ── */
+function Messages({ token }) {
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    api.get('/api/admin/messages', authHeader(token)).then(({ data }) => setMessages(data));
+  }, []);
+
+  return (
+    <div>
+      <h1 className="admin-page-title">All Messages</h1>
+      <div className="admin-card">
+        {messages.length === 0 ? (
+          <p style={{ color: 'var(--text-muted)' }}>No messages yet.</p>
+        ) : (
+          <div className="table-wrap">
+            <table className="admin-table">
+              <thead>
+                <tr><th>From</th><th>Email</th><th>Product</th><th>Message</th><th>Date</th></tr>
+              </thead>
+              <tbody>
+                {messages.map((m) => (
+                  <tr key={m._id}>
+                    <td>{m.sender?.name || m.senderName || 'N/A'}</td>
+                    <td className="text-muted">{m.sender?.email || m.senderEmail}</td>
+                    <td>{m.product?.name || 'N/A'}</td>
+                    <td style={{ maxWidth: '260px', wordBreak: 'break-word' }}>{m.message}</td>
+                    <td className="text-muted">{new Date(m.createdAt).toLocaleDateString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,0 +1,26 @@
+.contact-seller {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: var(--bg);
+  border-radius: 16px;
+  border: 1.5px solid var(--border);
+}
+
+.contact-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.contact-seller textarea {
+  width: 100%;
+  resize: vertical;
+}
+
+.char-count {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: right;
+  margin-top: 0.25rem;
+  margin-bottom: 0.75rem;
+}

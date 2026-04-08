@@ -40,7 +40,7 @@ export default function Cart() {
               <div className="cart-item-info">
                 <p className="cart-item-name">{item.name}</p>
                 <p className="cart-item-sub">One Size</p>
-                <p className="price">NPR {item.price.toLocaleString()}</p>
+                <p className="price">NPR {item.price.toLocaleString()} <span className="vat-note">+13% VAT = NPR {Math.round(item.price * 1.13).toLocaleString()}</span></p>
               </div>
               <div className="cart-item-right">
                 <div className="qty-control">

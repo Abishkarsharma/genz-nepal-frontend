@@ -59,12 +59,60 @@
   letter-spacing: -0.02em;
 }
 
-.detail-price {
+.detail-price-block {
+  margin-bottom: 1rem;
+}
+
+.detail-price-vat {
   font-size: 1.6rem;
   font-weight: 700;
   color: var(--purple);
+}
+
+.vat-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: var(--purple-light);
+  padding: 0.15rem 0.5rem;
+  border-radius: 50px;
+  margin-left: 0.4rem;
+}
+
+.detail-price-base {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+}
+
+.specs-table {
   margin-bottom: 1rem;
 }
+
+.specs-table h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.specs-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.specs-table td {
+  padding: 0.4rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.spec-key {
+  font-weight: 600;
+  color: var(--text-muted);
+  width: 40%;
+}
+
+.spec-val { color: var(--text); }
 
 .detail-desc {
   color: var(--text-muted);

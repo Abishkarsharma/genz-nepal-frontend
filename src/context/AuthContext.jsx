@@ -24,11 +24,17 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('token');
   };
 
+  const updateUser = (userData) => {
+    const merged = { ...user, ...userData };
+    setUser(merged);
+    localStorage.setItem('user', JSON.stringify(merged));
+  };
+
   const isAdmin = user?.role === 'admin';
   const isSeller = user?.role === 'seller' || user?.role === 'admin';
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, isAdmin, isSeller }}>
+    <AuthContext.Provider value={{ user, token, login, logout, updateUser, isAdmin, isSeller }}>
       {children}
     </AuthContext.Provider>
   );

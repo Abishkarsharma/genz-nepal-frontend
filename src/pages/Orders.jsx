@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../api';
 import { useAuth } from '../context/AuthContext';
+import OrderTracker from '../components/OrderTracker';
 import './Orders.css';
 
 export default function Orders() {
@@ -42,7 +43,7 @@ export default function Orders() {
                 </div>
                 <span className={`order-status status-${order.status}`}>{order.status}</span>
               </div>
-              <div className="order-items">
+              <OrderTracker status={order.status} />              <div className="order-items">
                 {order.items.map((item, i) => (
                   <div key={i} className="order-item">
                     <img src={item.image} alt={item.name} />

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import SearchBar from './SearchBar';
 import './Navbar.css';
 
 export default function Navbar() {
@@ -24,6 +25,8 @@ export default function Navbar() {
           The Gen.Z Nepal
         </Link>
 
+        <SearchBar />
+
         <div className={`navbar-links ${menuOpen ? 'open' : ''}`}>
           <Link to="/" onClick={close}>Home</Link>
 
@@ -40,6 +43,7 @@ export default function Navbar() {
                 </Link>
               )}
               <Link to="/orders" onClick={close}>My Orders</Link>
+              <Link to="/profile" onClick={close}>Profile</Link>
               <span className="nav-user">Hi, {user.name.split(' ')[0]}</span>
               <button className="nav-logout" onClick={handleLogout}>Logout</button>
             </>
