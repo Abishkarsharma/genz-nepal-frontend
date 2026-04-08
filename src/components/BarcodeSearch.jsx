@@ -1,27 +1,29 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BrowserMultiFormatReader } from '@zxing/browser';
+import { Html5Qrcode } from 'html5-qrcode';
 import api from '../api';
 import './BarcodeSearch.css';
+
+const SCANNER_ID = 'barcode-scanner-container';
 
 export default function BarcodeSearch() {
   const [barcode, setBarcode] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [scanning, setScanning] = useState(false);
-  const videoRef = useRef(null);
-  const readerRef = useRef(null);
+  const scannerRef = useRef(null);
   const navigate = useNavigate();
 
   const searchBarcode = async (code) => {
-    if (!code.trim()) { setError('Please enter a barcode'); return; }
-    setLoading(true); setError('');
+    const trimmed = code.trim();
+    if (!trimmed) { setError('Please enter a barcode'); return; }
+    setLoading(true);
+    setError('');
     try {
-      const { data } = await api.get(`/api/products?barcode=${encodeURIComponent(code.trim())}`);
+      const { data } = await api.get(`/api/products?barcode=${encodeURIComponent(trimmed)}`);
       navigate(`/product/${data._id}`);
     } catch {
       setError('No product found for this barcode');
-    } finally {
       setLoading(false);
     }
   };
@@ -31,38 +33,53 @@ export default function BarcodeSearch() {
     searchBarcode(barcode);
   };
 
-  const startCamera = async () => {
+  const startScanner = async () => {
     setError('');
     setScanning(true);
   };
 
-  const stopCamera = () => {
-    if (readerRef.current) {
-      try { readerRef.current.reset(); } catch {}
-      readerRef.current = null;
+  const stopScanner = async () => {
+    if (scannerRef.current) {
+      try {
+        await scannerRef.current.stop();
+        scannerRef.current.clear();
+      } catch {}
+      scannerRef.current = null;
     }
     setScanning(false);
   };
 
   useEffect(() => {
-    if (!scanning || !videoRef.current) return;
-    const reader = new BrowserMultiFormatReader();
-    readerRef.current = reader;
+    if (!scanning) return;
 
-    reader.decodeFromVideoDevice(undefined, videoRef.current, (result, err) => {
-      if (result) {
-        const code = result.getText();
-        stopCamera();
-        setBarcode(code);
-        searchBarcode(code);
+    // Small delay to ensure DOM element is mounted
+    const timer = setTimeout(async () => {
+      try {
+        const scanner = new Html5Qrcode(SCANNER_ID);
+        scannerRef.current = scanner;
+
+        await scanner.start(
+          { facingMode: 'environment' }, // use back camera on mobile
+          { fps: 10, qrbox: { width: 280, height: 140 } },
+          async (decodedText) => {
+            await stopScanner();
+            setBarcode(decodedText);
+            searchBarcode(decodedText);
+          },
+          () => {} // ignore per-frame errors
+        );
+      } catch (err) {
+        setError('Camera access denied. Please allow camera permission in your browser settings.');
+        setScanning(false);
       }
-    }).catch(() => {
-      setError('Camera access denied. Please allow camera permission.');
-      setScanning(false);
-    });
+    }, 100);
 
     return () => {
-      try { reader.reset(); } catch {}
+      clearTimeout(timer);
+      if (scannerRef.current) {
+        try { scannerRef.current.stop(); } catch {}
+        scannerRef.current = null;
+      }
     };
   }, [scanning]);
 
@@ -76,8 +93,12 @@ export default function BarcodeSearch() {
           value={barcode}
           onChange={(e) => { setBarcode(e.target.value); setError(''); }}
         />
-        <button type="button" className="btn btn-outline btn-sm" onClick={scanning ? stopCamera : startCamera}>
-          {scanning ? '✕ Stop' : '📷 Scan'}
+        <button
+          type="button"
+          className={`btn btn-sm ${scanning ? 'btn-danger' : 'btn-outline'}`}
+          onClick={scanning ? stopScanner : startScanner}
+        >
+          {scanning ? '✕ Stop' : '📷 Camera'}
         </button>
         <button type="submit" className="btn btn-primary btn-sm" disabled={loading}>
           {loading ? '...' : 'Find'}
@@ -85,9 +106,9 @@ export default function BarcodeSearch() {
       </form>
 
       {scanning && (
-        <div className="barcode-camera">
-          <video ref={videoRef} className="barcode-video" autoPlay muted playsInline />
-          <p className="barcode-camera-hint">Point camera at barcode</p>
+        <div className="barcode-camera-wrap">
+          <div id={SCANNER_ID} className="barcode-scanner-box" />
+          <p className="barcode-hint">📷 Point your camera at a barcode — it will scan automatically</p>
         </div>
       )}
 
