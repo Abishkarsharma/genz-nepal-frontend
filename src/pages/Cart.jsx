@@ -1,10 +1,8 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { SHIPPING, TAX_RATE } from '../constants';
 import './Cart.css';
-
-const SHIPPING = 250;
-const TAX_RATE = 0.13;
 
 export default function Cart() {
   const { cart, removeFromCart, updateQty, subtotal } = useCart();

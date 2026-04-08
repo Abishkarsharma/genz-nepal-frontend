@@ -4,9 +4,9 @@ import api from '../api';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import PaymentModal from '../components/PaymentModal';
+import { SHIPPING, TAX_RATE } from '../constants';
 import './Checkout.css';
 
-const SHIPPING = 150;
 const SIMULATED_METHODS = ['eSewa', 'Khalti', 'Bank Transfer'];
 
 export default function Checkout() {
@@ -20,7 +20,7 @@ export default function Checkout() {
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
-  const tax = Math.round(subtotal * 0.13);
+  const tax = Math.round(subtotal * TAX_RATE);
   const total = subtotal + SHIPPING + tax;
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });

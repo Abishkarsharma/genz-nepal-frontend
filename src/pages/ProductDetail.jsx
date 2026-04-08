@@ -4,9 +4,8 @@ import api from '../api';
 import { useCart } from '../context/CartContext';
 import ReviewSection from '../components/ReviewSection';
 import ContactSeller from '../components/ContactSeller';
+import { TAX_RATE } from '../constants';
 import './ProductDetail.css';
-
-const TAX_RATE = 0.13;
 
 export default function ProductDetail() {
   const { id } = useParams();

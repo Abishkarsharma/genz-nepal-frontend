@@ -10,16 +10,23 @@ export default function Orders() {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     if (!user) { navigate('/login'); return; }
     api.get('/api/orders/my', { headers: { Authorization: `Bearer ${token}` } })
       .then(({ data }) => setOrders(data))
-      .catch(console.error)
+      .catch(() => setError('Failed to load orders. Please try again.'))
       .finally(() => setLoading(false));
   }, [user]);
 
   if (loading) return <div className="spinner" style={{ marginTop: '4rem' }} />;
+
+  if (error) return (
+    <div className="container orders-page">
+      <div className="alert alert-error" style={{ marginTop: '2rem' }}>{error}</div>
+    </div>
+  );
 
   return (
     <div className="container orders-page">

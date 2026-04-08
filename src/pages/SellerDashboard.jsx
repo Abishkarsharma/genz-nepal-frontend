@@ -14,7 +14,7 @@ export default function SellerDashboard() {
 
   const load = () =>
     api.get('/api/products').then(({ data }) =>
-      setProducts(data.filter((p) => p.createdBy === user.id))
+      setProducts(data.filter((p) => String(p.createdBy) === user.id))
     );
 
   useEffect(() => { load(); }, []);
