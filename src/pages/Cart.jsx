@@ -28,7 +28,11 @@ export default function Cart() {
   const allChecked = cart.length > 0 && cart.every((i) => checkedItems[i._id]);
   const checkedCount = Object.values(checkedItems).filter(Boolean).length;
   const shipping = cart.length > 0 ? SHIPPING : 0;
-  const total = subtotal + shipping;
+
+  // Only calculate totals for checked items
+  const checkedCart = cart.filter((i) => checkedItems[i._id]);
+  const checkedSubtotal = checkedCart.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  const total = checkedSubtotal + (checkedCart.length > 0 ? shipping : 0);
 
   const toggleSelectAll = () => {
     const next = !allChecked;
@@ -171,12 +175,12 @@ export default function Cart() {
         <div className="cart-summary">
           <h2 className="summary-title">Order Summary</h2>
           <div className="summary-row">
-            <span>Subtotal ({cart.length} items)</span>
-            <span>NPR {subtotal.toLocaleString()}</span>
+            <span>Subtotal ({checkedCart.length} item{checkedCart.length !== 1 ? 's' : ''} selected)</span>
+            <span>NPR {checkedSubtotal.toLocaleString()}</span>
           </div>
           <div className="summary-row">
             <span>Shipping Fee</span>
-            <span>NPR {shipping.toLocaleString()}</span>
+            <span>{checkedCart.length > 0 ? `NPR ${shipping.toLocaleString()}` : '—'}</span>
           </div>
           <div className="voucher-row">
             <input
@@ -192,8 +196,13 @@ export default function Cart() {
             <span>Total</span>
             <span className="summary-total-amount">NPR {total.toLocaleString()}</span>
           </div>
-          <button className="checkout-btn" onClick={() => navigate('/checkout')}>
-            PROCEED TO CHECKOUT ({checkedCount || cart.length})
+          <button
+            className="checkout-btn"
+            onClick={() => navigate('/checkout')}
+            disabled={checkedCount === 0}
+            style={{ opacity: checkedCount === 0 ? 0.5 : 1 }}
+          >
+            {checkedCount === 0 ? 'SELECT ITEMS TO CHECKOUT' : `PROCEED TO CHECKOUT (${checkedCount})`}
           </button>
         </div>
       </div>
