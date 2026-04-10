@@ -1,70 +1,112 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 import api from '../api';
 import ProductCard from '../components/ProductCard';
-import BarcodeSearch from '../components/BarcodeSearch';
+import ImageSearch from '../components/ImageSearch';
 import './Home.css';
 
-const CATEGORIES = ['All', 'Accessories', 'Home', 'Electronics', 'Stationery', 'Wellness'];
+const CATEGORIES = ['All', 'Electronics', 'Accessories', 'Home', 'Stationery', 'Wellness'];
+const SORT_OPTIONS = [
+  { label: 'Best Match', value: 'best' },
+  { label: 'Price: Low to High', value: 'price_asc' },
+  { label: 'Price: High to Low', value: 'price_desc' },
+  { label: 'Newest First', value: 'newest' },
+];
 
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState('All');
+  const [sortBy, setSortBy] = useState('best');
+  const [viewMode, setViewMode] = useState('grid');
+  const [selectedBrands, setSelectedBrands] = useState([]);
+  const [showAllBrands, setShowAllBrands] = useState(false);
+  const [freeDelivery, setFreeDelivery] = useState(false);
+  const location = useLocation();
+
+  const fetchProducts = useCallback(async (category) => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (category !== 'All') params.set('category', category);
+      const searchParam = new URLSearchParams(location.search).get('search');
+      if (searchParam) params.set('search', searchParam);
+      const { data } = await api.get(`/api/products?${params}`);
+      setProducts(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }, [location.search]);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const url = activeCategory === 'All'
-          ? '/api/products'
-          : `/api/products?category=${activeCategory}`;
-        const { data } = await api.get(url);
-        setProducts(data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProducts();
-  }, [activeCategory]);
+    fetchProducts(activeCategory);
+  }, [activeCategory, fetchProducts]);
 
-  const featured = products.slice(0, 4);
+  const allBrands = [...new Set(products.map((p) => p.brand).filter(Boolean))];
+  const visibleBrands = showAllBrands ? allBrands : allBrands.slice(0, 8);
+
+  const toggleBrand = (brand) => {
+    setSelectedBrands((prev) =>
+      prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand]
+    );
+  };
+
+  let filtered = [...products];
+  if (selectedBrands.length > 0) filtered = filtered.filter((p) => selectedBrands.includes(p.brand));
+  if (freeDelivery) filtered = filtered.filter((p) => p.freeDelivery);
+  if (sortBy === 'price_asc') filtered.sort((a, b) => a.price - b.price);
+  else if (sortBy === 'price_desc') filtered.sort((a, b) => b.price - a.price);
+  else if (sortBy === 'newest') filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   return (
-    <div>
-      {/* Hero / Promo Banner */}
+    <div className="home">
+      {/* Hero */}
       <section className="hero">
+        <div className="hero-overlay" />
         <div className="container hero-content">
-          <p className="hero-tag">New Collection</p>
-          <h1>Elevating the<br />Essence of<br />Kathmandu.</h1>
-          <p className="hero-sub">Discover curated essentials that blend ancient heritage with modern Himalayan living.</p>
-          <a href="#products" className="btn btn-primary">Shop Collection →</a>
+          <div className="hero-text">
+            <span className="hero-tag">New Collection 2025</span>
+            <h1>Elevating the<br />Essence of<br />Kathmandu.</h1>
+            <p>Curated essentials blending ancient heritage with modern Himalayan living.</p>
+            <div className="hero-actions">
+              <a href="#products" className="btn btn-primary">Shop Now</a>
+              <a href="#products" className="btn hero-btn-ghost">View All</a>
+            </div>
+          </div>
+          <div className="hero-trending">
+            <p className="trending-label">Trending</p>
+            {['Electronics', 'Accessories', 'Home Decor', 'Wellness'].map((t) => (
+              <button
+                key={t}
+                className="trending-tag"
+                onClick={() => {
+                  const cat = CATEGORIES.find((c) => t.startsWith(c)) || 'All';
+                  setActiveCategory(cat);
+                  document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Featured Products */}
-      {featured.length > 0 && (
-        <section className="container featured-section">
-          <h2 className="section-title">Featured Picks</h2>
-          <div className="product-grid">
-            {featured.map((p) => <ProductCard key={p._id} product={p} />)}
-          </div>
-        </section>
-      )}
-
-      {/* Barcode Search */}
-      <section className="container" style={{ marginTop: '1.5rem' }}>
-        <BarcodeSearch />
+      {/* Visual Image Search */}
+      <section className="container barcode-section">
+        <ImageSearch />
       </section>
 
-      {/* Category Tabs */}
-      <section className="container" style={{ marginTop: '0.5rem' }}>
-        <div className="category-tabs">
+      {/* Category tabs — top of products */}
+      <section className="container cat-tabs-section">
+        <div className="cat-tabs">
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
               className={`cat-tab ${activeCategory === cat ? 'active' : ''}`}
-              onClick={() => { setActiveCategory(cat); setLoading(true); }}
+              onClick={() => setActiveCategory(cat)}
             >
               {cat}
             </button>
@@ -72,25 +114,102 @@ export default function Home() {
         </div>
       </section>
 
-      {/* All Products */}
-      <section id="products" className="container" style={{ marginTop: '1.5rem', paddingBottom: '3rem' }}>
-        <div className="section-header">
-          <h2 className="page-title">All Products</h2>
-          <p className="page-subtitle">Handpicked for your lifestyle</p>
-        </div>
+      {/* Products */}
+      <section id="products" className="container products-section">
+        {/* Sidebar */}
+        <aside className="filter-sidebar">
+          {allBrands.length > 0 && (
+            <div className="filter-block">
+              <h4 className="filter-heading">Brand</h4>
+              {visibleBrands.map((brand) => (
+                <label key={brand} className="filter-option">
+                  <input
+                    type="checkbox"
+                    checked={selectedBrands.includes(brand)}
+                    onChange={() => toggleBrand(brand)}
+                    className="filter-checkbox"
+                  />
+                  <span>{brand}</span>
+                </label>
+              ))}
+              {allBrands.length > 8 && (
+                <button className="view-more-btn" onClick={() => setShowAllBrands((v) => !v)}>
+                  {showAllBrands ? 'VIEW LESS' : 'VIEW MORE'}
+                </button>
+              )}
+            </div>
+          )}
 
-        {loading ? (
-          <div className="spinner" />
-        ) : products.length === 0 ? (
-          <div className="empty-state">
-            <h3>No products found</h3>
-            <p>Try a different category</p>
+          <div className="filter-block">
+            <h4 className="filter-heading">Service</h4>
+            <label className="filter-option">
+              <input
+                type="checkbox"
+                checked={freeDelivery}
+                onChange={() => setFreeDelivery((v) => !v)}
+                className="filter-checkbox"
+              />
+              <span>Free Delivery</span>
+            </label>
           </div>
-        ) : (
-          <div className="product-grid">
-            {products.map((p) => <ProductCard key={p._id} product={p} />)}
+        </aside>
+
+        {/* Main */}
+        <div className="products-main">
+          <div className="results-bar">
+            <span className="results-count">
+              {filtered.length} item{filtered.length !== 1 ? 's' : ''}
+              {activeCategory !== 'All' ? ` in ${activeCategory}` : ''}
+            </span>
+            <div className="results-controls">
+              <div className="sort-control">
+                <span className="sort-label">Sort By:</span>
+                <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="sort-select">
+                  {SORT_OPTIONS.map((o) => (
+                    <option key={o.value} value={o.value}>{o.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="view-toggle">
+                <span className="sort-label">View:</span>
+                <button
+                  className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`}
+                  onClick={() => setViewMode('grid')}
+                  aria-label="Grid view"
+                >
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                    <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+                    <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+                  </svg>
+                </button>
+                <button
+                  className={`view-btn ${viewMode === 'list' ? 'active' : ''}`}
+                  onClick={() => setViewMode('list')}
+                  aria-label="List view"
+                >
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                    <rect x="3" y="4" width="18" height="3" rx="1"/><rect x="3" y="10.5" width="18" height="3" rx="1"/><rect x="3" y="17" width="18" height="3" rx="1"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
           </div>
-        )}
+
+          {loading ? (
+            <div className="spinner" />
+          ) : filtered.length === 0 ? (
+            <div className="empty-state">
+              <h3>No products found</h3>
+              <p>Try a different category or filter</p>
+            </div>
+          ) : (
+            <div className={viewMode === 'grid' ? 'product-grid' : 'product-list'}>
+              {filtered.map((p) => (
+                <ProductCard key={p._id} product={p} listView={viewMode === 'list'} />
+              ))}
+            </div>
+          )}
+        </div>
       </section>
     </div>
   );

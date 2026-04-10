@@ -187,3 +187,75 @@
   border: 2px solid var(--border);
   flex-shrink: 0;
 }
+
+/* Image upload zone */
+.img-upload-zone {
+  border: 2px dashed #e0e0e0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+  overflow: hidden;
+  min-height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.img-upload-zone:hover {
+  border-color: #f57224;
+  background: #fef3ec;
+}
+
+.img-upload-zone.has-image {
+  border-style: solid;
+  border-color: #eee;
+  cursor: default;
+}
+
+.img-upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 1.25rem;
+  text-align: center;
+}
+
+.img-upload-placeholder p {
+  font-size: 0.82rem;
+  color: #aaa;
+  margin: 0;
+}
+
+.upload-hint {
+  font-size: 0.7rem !important;
+  color: #ccc !important;
+}
+
+.img-upload-preview {
+  position: relative;
+  width: 100%;
+}
+
+.img-upload-preview img {
+  width: 100%;
+  max-height: 180px;
+  object-fit: contain;
+  display: block;
+  background: #fafafa;
+}
+
+.img-change-btn {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(0,0,0,0.55);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}

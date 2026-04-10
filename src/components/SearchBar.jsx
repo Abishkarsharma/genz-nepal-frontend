@@ -9,6 +9,7 @@ export default function SearchBar() {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const timerRef = useRef(null);
+  const wrapRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,28 +27,59 @@ export default function SearchBar() {
     return () => clearTimeout(timerRef.current);
   }, [query]);
 
+  // Close on outside click/tap
+  useEffect(() => {
+    const handler = (e) => {
+      if (wrapRef.current && !wrapRef.current.contains(e.target)) {
+        setShow(false);
+      }
+    };
+    document.addEventListener('pointerdown', handler);
+    return () => document.removeEventListener('pointerdown', handler);
+  }, []);
+
   const handleSelect = (id) => {
     setQuery('');
     setShow(false);
     navigate(`/product/${id}`);
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (query.trim()) {
+      setShow(false);
+      navigate(`/?search=${encodeURIComponent(query.trim())}`);
+    }
+  };
+
   return (
-    <div className="searchbar-wrap">
-      <input
-        className="searchbar-input"
-        placeholder="Search products..."
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        onBlur={() => setTimeout(() => setShow(false), 200)}
-        onFocus={() => query.length >= 2 && setShow(true)}
-      />
+    <div className="searchbar-wrap" ref={wrapRef}>
+      <form className="searchbar-form" onSubmit={handleSubmit}>
+        <input
+          className="searchbar-input"
+          placeholder="Search in Gen.Z Nepal..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onFocus={() => query.length >= 2 && setShow(true)}
+          autoComplete="off"
+        />
+        <button type="submit" className="searchbar-btn" aria-label="Search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </button>
+      </form>
+
       {show && (
         <div className="searchbar-dropdown">
           {loading && <p className="search-item muted">Searching...</p>}
           {!loading && results.length === 0 && <p className="search-item muted">No results found</p>}
           {results.map((p) => (
-            <div key={p._id} className="search-item" onMouseDown={() => handleSelect(p._id)}>
+            <div
+              key={p._id}
+              className="search-item"
+              onPointerDown={(e) => { e.preventDefault(); handleSelect(p._id); }}
+            >
               <img src={p.image} alt={p.name} className="search-thumb" />
               <div>
                 <p className="search-name">{p.name}</p>

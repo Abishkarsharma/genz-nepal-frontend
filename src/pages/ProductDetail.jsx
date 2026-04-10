@@ -4,7 +4,6 @@ import api from '../api';
 import { useCart } from '../context/CartContext';
 import ReviewSection from '../components/ReviewSection';
 import ContactSeller from '../components/ContactSeller';
-import { TAX_RATE } from '../constants';
 import './ProductDetail.css';
 
 export default function ProductDetail() {
@@ -32,8 +31,6 @@ export default function ProductDetail() {
   if (loading) return <div className="spinner" style={{ marginTop: '4rem' }} />;
   if (!product) return null;
 
-  const vatPrice = Math.round(product.price * (1 + TAX_RATE));
-
   return (
     <div className="container detail-page">
       <button className="back-btn" onClick={() => navigate(-1)}>← Back</button>
@@ -48,10 +45,12 @@ export default function ProductDetail() {
           <p className="detail-category">{product.category}</p>
           <h1 className="detail-name">{product.name}</h1>
 
-          {/* VAT-inclusive price shown first */}
+          {/* Price */}
           <div className="detail-price-block">
-            <p className="detail-price-vat">NPR {vatPrice.toLocaleString()} <span className="vat-label">incl. 13% VAT</span></p>
-            <p className="detail-price-base">Base: NPR {product.price.toLocaleString()}</p>
+            <p className="detail-price-main">NPR {product.price.toLocaleString()}</p>
+            {product.originalPrice && (
+              <p className="detail-price-original">NPR {product.originalPrice.toLocaleString()}</p>
+            )}
           </div>
 
           <p className="detail-desc">{product.description}</p>

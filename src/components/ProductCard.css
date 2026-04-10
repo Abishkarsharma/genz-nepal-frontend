@@ -1,76 +1,220 @@
 .product-card {
   display: flex;
   flex-direction: column;
+  background: #fff;
+  border-radius: 4px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid #f0f0f0;
+  transition: box-shadow 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.product-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
 }
 
 .product-img-wrap {
   position: relative;
-  display: block;
   aspect-ratio: 1;
   overflow: hidden;
+  background: #fafafa;
 }
 
 .product-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s;
+  transition: transform 0.3s ease;
+  display: block;
 }
 
-.product-card:hover .product-img {
-  transform: scale(1.05);
+/* Only scale on real hover (not touch) */
+@media (hover: hover) {
+  .product-card:hover .product-img {
+    transform: scale(1.04);
+  }
 }
 
-.product-category {
+.product-discount-badge {
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 8px;
+  right: 8px;
+  background: #f57224;
+  color: white;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.2rem 0.35rem;
+  border-radius: 3px;
+  text-align: center;
+  line-height: 1.3;
 }
 
 .product-info {
-  padding: 0.85rem;
+  padding: 0.7rem 0.75rem 0.75rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.3rem;
   flex: 1;
 }
 
 .product-name {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--text);
-  text-decoration: none;
-  line-height: 1.3;
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: #333;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 0;
 }
 
-.product-name:hover {
-  color: var(--purple);
-}
-
-.product-footer {
+.product-price-row {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: auto;
+  align-items: baseline;
+  gap: 0.4rem;
+  flex-wrap: wrap;
 }
 
-.add-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--purple);
+.product-price {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #f57224;
+}
+
+.product-original {
+  font-size: 0.75rem;
+  color: #aaa;
+  text-decoration: line-through;
+}
+
+.product-sold {
+  font-size: 0.72rem;
+  color: #999;
+  margin: 0;
+}
+
+.product-add-btn {
+  margin-top: auto;
+  padding: 0.45rem 0;
+  background: #f57224;
   color: white;
   border: none;
-  font-size: 1.3rem;
+  border-radius: 3px;
+  font-size: 0.78rem;
+  font-weight: 600;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s, transform 0.1s;
-  line-height: 1;
+  width: 100%;
+  transition: background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
-.add-btn:hover {
-  background: var(--purple-dark);
-  transform: scale(1.1);
+.product-add-btn:hover {
+  background: #e0641a;
+}
+
+.product-add-btn.added {
+  background: #10b981;
+}
+
+/* List view card */
+.product-list-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: white;
+  border-radius: 4px;
+  padding: 1rem;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid #f0f0f0;
+  transition: box-shadow 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.product-list-card:hover {
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.list-card-img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
+  background: #fafafa;
+}
+
+.list-card-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.list-card-name {
+  font-size: 0.9rem;
+  color: #333;
+  margin-bottom: 0.2rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.list-card-meta {
+  font-size: 0.75rem;
+  color: #999;
+  margin-bottom: 0.4rem;
+}
+
+.list-card-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.list-card-price {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #f57224;
+}
+
+.list-card-original {
+  font-size: 0.78rem;
+  color: #aaa;
+  text-decoration: line-through;
+}
+
+.list-card-discount {
+  font-size: 0.75rem;
+  color: #f57224;
+  font-weight: 600;
+}
+
+.list-card-sold {
+  font-size: 0.72rem;
+  color: #999;
+  margin-top: 0.25rem;
+}
+
+.list-add-btn {
+  flex-shrink: 0;
+  padding: 0.5rem 1rem;
+  background: #f57224;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.list-add-btn:hover {
+  background: #e0641a;
 }

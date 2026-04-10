@@ -81,7 +81,7 @@ function Products({ token }) {
   const handleImageFile = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    if (file.size > 2 * 1024 * 1024) { setError('Image must be under 2MB'); return; }
+    if (file.size > 5 * 1024 * 1024) { setError('Image must be under 5MB'); return; }
     const reader = new FileReader();
     reader.onload = (ev) => { setImagePreview(ev.target.result); setForm((f) => ({ ...f, image: ev.target.result })); };
     reader.readAsDataURL(file);
@@ -137,19 +137,27 @@ function Products({ token }) {
           </div>
           <div className="form-group">
             <label>Product Image</label>
-            <div className="img-upload-row">
-              {imagePreview && <img src={imagePreview} alt="preview" className="img-preview" />}
-              <div>
-                <button type="button" className="btn btn-outline btn-sm" onClick={() => imgRef.current.click()}>
-                  📷 Choose Image from Device
-                </button>
-                <input ref={imgRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleImageFile} />
-                <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.4rem' }}>or paste URL below</p>
-                <input placeholder="https://..."
-                  value={form.image.startsWith('data:') ? '' : form.image}
-                  onChange={(e) => { setForm({ ...form, image: e.target.value }); setImagePreview(e.target.value); }}
-                  style={{ marginTop: '0.25rem' }} />
-              </div>
+            <div
+              className={`img-upload-zone ${imagePreview ? 'has-image' : ''}`}
+              onClick={() => !imagePreview && imgRef.current.click()}
+            >
+              <input ref={imgRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleImageFile} />
+              {imagePreview ? (
+                <div className="img-upload-preview">
+                  <img src={imagePreview} alt="preview" />
+                  <button type="button" className="img-change-btn" onClick={(e) => { e.stopPropagation(); imgRef.current.click(); }}>
+                    Change Image
+                  </button>
+                </div>
+              ) : (
+                <div className="img-upload-placeholder">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+                  </svg>
+                  <p>Click to upload image</p>
+                  <p className="upload-hint">JPG, PNG, WEBP up to 5MB</p>
+                </div>
+              )}
             </div>
           </div>
           <div className="form-group">

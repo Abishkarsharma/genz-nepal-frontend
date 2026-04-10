@@ -1,47 +1,101 @@
 .auth-page {
-  min-height: calc(100vh - 120px);
+  min-height: calc(100vh - 100px);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem 1rem;
+  background: #f5f5f5;
 }
 
 .auth-card {
   background: white;
-  border-radius: 20px;
-  padding: 2.5rem;
+  border-radius: 6px;
+  padding: 2rem 2rem 1.75rem;
   width: 100%;
-  max-width: 420px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  max-width: 400px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  border: 1px solid #eee;
+}
+
+.auth-otp-icon {
+  width: 56px;
+  height: 56px;
+  background: #fef3ec;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
 }
 
 .auth-title {
-  font-size: 1.6rem;
-  font-weight: 800;
-  margin-bottom: 0.25rem;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+  color: #1a1a1a;
 }
 
 .auth-sub {
-  color: var(--text-muted);
-  font-size: 0.9rem;
+  color: #888;
+  font-size: 0.85rem;
   margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.auth-sub strong {
+  color: #333;
 }
 
 .auth-btn {
   width: 100%;
   justify-content: center;
   margin-top: 0.5rem;
+  background: #f57224;
+  border-radius: 4px;
+  padding: 0.7rem;
+}
+
+.auth-btn:hover {
+  background: #e0641a;
 }
 
 .auth-switch {
   text-align: center;
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  margin-top: 1.25rem;
+  font-size: 0.82rem;
+  color: #999;
+  margin-top: 1rem;
 }
 
 .auth-switch a {
-  color: var(--purple);
+  color: #f57224;
   font-weight: 600;
   text-decoration: none;
+}
+
+.auth-switch a:hover {
+  text-decoration: underline;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: #f57224;
+  font-weight: 600;
+  font-size: 0.82rem;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.link-btn:hover {
+  text-decoration: underline;
+}
+
+.otp-input {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  padding: 0.75rem;
 }

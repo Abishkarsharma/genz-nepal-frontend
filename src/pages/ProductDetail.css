@@ -61,28 +61,22 @@
 
 .detail-price-block {
   margin-bottom: 1rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
-.detail-price-vat {
+.detail-price-main {
   font-size: 1.6rem;
   font-weight: 700;
-  color: var(--purple);
+  color: #f57224;
 }
 
-.vat-label {
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--text-muted);
-  background: var(--purple-light);
-  padding: 0.15rem 0.5rem;
-  border-radius: 50px;
-  margin-left: 0.4rem;
-}
-
-.detail-price-base {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  margin-top: 0.2rem;
+.detail-price-original {
+  font-size: 0.95rem;
+  color: #aaa;
+  text-decoration: line-through;
 }
 
 .specs-table {

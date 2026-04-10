@@ -1,60 +1,120 @@
-.success-page {
-  padding: 3rem 1rem;
+.success-wrap {
+  background: #f5f5f5;
+  min-height: 100vh;
   display: flex;
+  align-items: center;
   justify-content: center;
+  padding: 2rem 1rem;
 }
 
 .success-card {
   background: white;
-  border-radius: 20px;
-  padding: 2.5rem;
+  border-radius: 8px;
+  padding: 2rem;
   width: 100%;
-  max-width: 420px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  max-width: 440px;
+  border: 1px solid #eee;
   text-align: center;
 }
 
+.success-icon-wrap {
+  margin-bottom: 1.25rem;
+}
+
 .success-icon {
-  width: 72px;
-  height: 72px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
-  background: var(--success);
-  color: white;
-  font-size: 2rem;
-  font-weight: 700;
+  background: #10b981;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 1.25rem;
+  margin: 0 auto;
+  box-shadow: 0 0 0 8px rgba(16,185,129,0.12);
 }
 
-.success-card h1 {
-  font-size: 1.5rem;
+.success-title {
+  font-size: 1.4rem;
   font-weight: 800;
-  margin-bottom: 0.5rem;
+  color: #1a1a1a;
+  margin-bottom: 0.4rem;
 }
 
 .success-sub {
-  color: var(--text-muted);
+  font-size: 0.85rem;
+  color: #888;
   margin-bottom: 1.5rem;
+  line-height: 1.5;
 }
 
 .success-details {
-  background: var(--bg);
-  border-radius: 12px;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
+  background: #fafafa;
+  border: 1px solid #f0f0f0;
+  border-radius: 6px;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1rem;
   text-align: left;
 }
 
 .detail-row {
   display: flex;
   justify-content: space-between;
-  font-size: 0.88rem;
-  padding: 0.4rem 0;
-  border-bottom: 1px solid var(--border);
+  align-items: center;
+  font-size: 0.82rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid #f0f0f0;
 }
 
-.detail-row:last-child { border-bottom: none; }
-.detail-row span:first-child { color: var(--text-muted); }
-.mono { font-family: monospace; font-weight: 700; }
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-row span:first-child {
+  color: #aaa;
+}
+
+.detail-val {
+  font-weight: 600;
+  color: #333;
+}
+
+.mono {
+  font-family: monospace;
+}
+
+.success-address {
+  background: #fafafa;
+  border: 1px solid #f0f0f0;
+  border-radius: 6px;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.success-address-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #bbb;
+  margin-bottom: 0.4rem;
+}
+
+.success-address-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.15rem;
+}
+
+.success-address-line {
+  font-size: 0.8rem;
+  color: #777;
+  line-height: 1.5;
+}
+
+.success-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
