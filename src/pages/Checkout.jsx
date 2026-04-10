@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import PaymentModal from '../components/PaymentModal';
 import { SHIPPING } from '../constants';
 import './Checkout.css';
 
@@ -14,33 +13,23 @@ const NEPAL_CITIES = [
 ];
 
 const PAYMENT_METHODS = [
-  {
-    id: 'Cash on Delivery',
-    label: 'Cash on Delivery',
-    desc: 'Pay in cash when your order arrives at your door.',
-    icon: '💵',
-  },
-  {
-    id: 'eSewa',
-    label: 'eSewa',
-    desc: 'Pay securely via eSewa digital wallet.',
-    icon: '💚',
-  },
-  {
-    id: 'Khalti',
-    label: 'Khalti',
-    desc: 'Pay securely via Khalti digital wallet.',
-    icon: '💜',
-  },
-  {
-    id: 'Bank Transfer',
-    label: 'Bank Transfer',
-    desc: 'Direct transfer to our bank account.',
-    icon: '🏦',
-  },
+  { id: 'Cash on Delivery', label: 'Cash on Delivery', desc: 'Pay in cash when your order arrives.', icon: '💵' },
+  { id: 'eSewa', label: 'eSewa', desc: 'Pay via eSewa digital wallet.', icon: '💚' },
+  { id: 'Khalti', label: 'Khalti', desc: 'Pay via Khalti digital wallet.', icon: '💜' },
+  { id: 'Bank Transfer', label: 'Bank Transfer', desc: 'Direct bank transfer.', icon: '🏦' },
 ];
 
-const SIMULATED = ['eSewa', 'Khalti', 'Bank Transfer'];
+// Load Khalti SDK dynamically
+function loadKhaltiScript() {
+  return new Promise((resolve) => {
+    if (window.KhaltiCheckout) return resolve(true);
+    const script = document.createElement('script');
+    script.src = 'https://khalti.s3.ap-south-1.amazonaws.com/KPG/dist/2020.12.17.0.0.0/khalti-checkout.iffe.js';
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.head.appendChild(script);
+  });
+}
 
 export default function Checkout() {
   const { cart, subtotal, clearCart } = useCart();
@@ -63,12 +52,10 @@ export default function Checkout() {
   const [payment, setPayment] = useState('Cash on Delivery');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-
   const total = subtotal + SHIPPING;
+  const [pendingOrderId, setPendingOrderId] = useState(null);
 
   const set = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
-
   const validateAddress = () => {
     if (!form.fullName.trim()) return 'Full name is required';
     if (!form.phone.trim()) return 'Phone number is required';
@@ -90,47 +77,146 @@ export default function Checkout() {
     }
   };
 
-  const placeOrder = async (paymentStatus, paymentRef) => {
+  const placeOrder = async (paymentStatus = 'pending', paymentRef = '') => {
     setLoading(true);
     setError('');
     try {
       const items = cart.map((i) => ({
-        product: i._id,
-        name: i.name,
-        price: i.price,
-        quantity: i.quantity,
-        image: i.image,
+        product: i._id, name: i.name, price: i.price, quantity: i.quantity, image: i.image,
       }));
-      const { data: order } = await api.post(
-        '/api/orders',
-        {
-          items,
-          shippingAddress: form,
-          paymentMethod: payment,
-          paymentStatus,
-          paymentRef: paymentRef || '',
-          subtotal,
-          shipping: SHIPPING,
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const { data: order } = await api.post('/api/orders', {
+        items, shippingAddress: form, paymentMethod: payment,
+        paymentStatus, paymentRef, subtotal, shipping: SHIPPING,
+      }, { headers: { Authorization: `Bearer ${token}` } });
+
       clearCart();
       navigate('/payment-success', {
         state: { orderId: order._id, ref: paymentRef || 'COD', method: payment, address: form },
       });
+      return order;
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to place order. Please try again.');
+      return null;
     } finally {
       setLoading(false);
     }
   };
 
-  const handlePlaceOrder = async () => {
-    if (SIMULATED.includes(payment)) {
-      setShowModal(true);
-    } else {
-      await placeOrder('pending', '');
+  // eSewa — form-based redirect (test merchant code: EPAYTEST)
+  const handleEsewa = async () => {
+    // First create a pending order to get the order ID
+    setLoading(true);
+    setError('');
+    try {
+      const items = cart.map((i) => ({
+        product: i._id, name: i.name, price: i.price, quantity: i.quantity, image: i.image,
+      }));
+      const { data: order } = await api.post('/api/orders', {
+        items, shippingAddress: form, paymentMethod: 'eSewa',
+        paymentStatus: 'pending', paymentRef: '', subtotal, shipping: SHIPPING,
+      }, { headers: { Authorization: `Bearer ${token}` } });
+
+      // Submit eSewa form
+      const merchantCode = import.meta.env.VITE_ESEWA_MERCHANT_CODE || 'EPAYTEST';
+      const successUrl = `${window.location.origin}/payment-success`;
+      const failureUrl = `${window.location.origin}/checkout`;
+
+      const form_el = document.createElement('form');
+      form_el.method = 'POST';
+      form_el.action = 'https://uat.esewa.com.np/epay/main'; // use esewa.com.np for production
+
+      const fields = {
+        amt: total,
+        psc: 0, pdc: 0, txAmt: 0,
+        tAmt: total,
+        pid: order._id,
+        scd: merchantCode,
+        su: successUrl,
+        fu: failureUrl,
+      };
+
+      Object.entries(fields).forEach(([key, val]) => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = val;
+        form_el.appendChild(input);
+      });
+
+      clearCart();
+      document.body.appendChild(form_el);
+      form_el.submit();
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to initiate eSewa payment');
+      setLoading(false);
     }
+  };
+
+  // Khalti — JS widget
+  const handleKhalti = async () => {
+    const loaded = await loadKhaltiScript();
+    if (!loaded) { setError('Failed to load Khalti. Please try again.'); return; }
+
+    // Create pending order first
+    setLoading(true);
+    setError('');
+    try {
+      const items = cart.map((i) => ({
+        product: i._id, name: i.name, price: i.price, quantity: i.quantity, image: i.image,
+      }));
+      const { data: order } = await api.post('/api/orders', {
+        items, shippingAddress: form, paymentMethod: 'Khalti',
+        paymentStatus: 'pending', paymentRef: '', subtotal, shipping: SHIPPING,
+      }, { headers: { Authorization: `Bearer ${token}` } });
+
+      setLoading(false);
+
+      const publicKey = import.meta.env.VITE_KHALTI_PUBLIC_KEY || 'test_public_key_dc74e0fd57cb46cd93832aee0a390234';
+
+      const checkout = new window.KhaltiCheckout({
+        publicKey,
+        productIdentity: order._id,
+        productName: `Gen.Z Nepal Order #${String(order._id).slice(-8).toUpperCase()}`,
+        productUrl: `${window.location.origin}/orders`,
+        paymentPreference: ['KHALTI', 'EBANKING', 'MOBILE_BANKING', 'CONNECT_IPS', 'SCT'],
+        eventHandler: {
+          onSuccess: async (payload) => {
+            // Verify on backend
+            try {
+              await api.post('/api/orders/verify-khalti', {
+                token: payload.token,
+                amount: payload.amount,
+                orderId: order._id,
+              }, { headers: { Authorization: `Bearer ${token}` } });
+
+              clearCart();
+              navigate('/payment-success', {
+                state: { orderId: order._id, ref: payload.idx || payload.token, method: 'Khalti', address: form },
+              });
+            } catch {
+              setError('Payment verified but order update failed. Contact support.');
+            }
+          },
+          onError: (err) => {
+            console.error('Khalti error:', err);
+            setError('Khalti payment failed. Please try again.');
+          },
+          onClose: () => {},
+        },
+      });
+
+      checkout.show({ amount: total * 100 }); // Khalti uses paisa
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to initiate Khalti payment');
+      setLoading(false);
+    }
+  };
+
+  const handlePlaceOrder = async () => {
+    if (payment === 'eSewa') return handleEsewa();
+    if (payment === 'Khalti') return handleKhalti();
+    // COD and Bank Transfer
+    await placeOrder('pending', '');
   };
 
   const STEPS = ['Delivery Address', 'Payment', 'Review & Place'];
@@ -138,16 +224,7 @@ export default function Checkout() {
 
   return (
     <div className="checkout-wrap">
-      {showModal && (
-        <PaymentModal
-          method={payment}
-          amount={total}
-          onConfirm={async (ref) => { setShowModal(false); await placeOrder('paid', ref); }}
-          onClose={() => setShowModal(false)}
-        />
-      )}
-
-      <div className="checkout-container">
+    <div className="checkout-container">
         {/* Progress */}
         <div className="checkout-progress">
           <div className="progress-track">
