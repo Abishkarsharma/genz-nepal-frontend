@@ -10,25 +10,18 @@ export default function Cart() {
   const [voucher, setVoucher] = useState('');
   const [wishlist, setWishlist] = useState({});
 
-  // All items checked by default
-  const [checkedItems, setCheckedItems] = useState(() => {
-    const initial = {};
-    try {
-      const saved = localStorage.getItem('cart');
-      const items = saved ? JSON.parse(saved) : [];
-      items.forEach((i) => { initial[i._id] = true; });
-    } catch {}
-    return initial;
-  });
+  // Build checked state from current cart — all checked by default
+  const [checkedItems, setCheckedItems] = useState({});
 
-  // Auto-check newly added items
+  // Sync whenever cart changes — new items get auto-checked
   useEffect(() => {
     setCheckedItems((prev) => {
-      const updated = { ...prev };
+      const next = {};
       cart.forEach((i) => {
-        if (!(i._id in updated)) updated[i._id] = true;
+        // Keep existing state if already set, otherwise default to true
+        next[i._id] = i._id in prev ? prev[i._id] : true;
       });
-      return updated;
+      return next;
     });
   }, [cart]);
 
