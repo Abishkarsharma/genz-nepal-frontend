@@ -26,18 +26,19 @@
   color: white;
 }
 
-.footer-logo-icon {
-  width: 30px;
-  height: 30px;
-  background: #0ea5e9;
-  color: white;
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.footer-brand-main {
   font-weight: 800;
-  font-size: 0.95rem;
-  flex-shrink: 0;
+  font-size: 1rem;
+  color: white;
+}
+
+.footer-brand-sub {
+  font-weight: 700;
+  font-size: 1rem;
+  background: linear-gradient(90deg, #f97316, #ec4899, #10b981);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .footer-brand p {
@@ -102,7 +103,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 1rem;
+  padding: 0.65rem 1rem;
   flex-wrap: wrap;
   gap: 0.75rem;
 }

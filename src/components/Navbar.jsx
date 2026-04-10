@@ -51,8 +51,29 @@ export default function Navbar() {
       <nav className="navbar">
         <div className="container navbar-inner">
           <Link to="/" className="navbar-brand">
-            <span className="brand-icon">G</span>
-            <span className="brand-text">Gen.Z Nepal</span>
+            <svg className="brand-logo-svg" viewBox="0 0 100 100" width="38" height="38" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#f97316"/>
+                  <stop offset="40%" stopColor="#ec4899"/>
+                  <stop offset="70%" stopColor="#8b5cf6"/>
+                  <stop offset="100%" stopColor="#3b82f6"/>
+                </linearGradient>
+                <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#06b6d4"/>
+                  <stop offset="50%" stopColor="#10b981"/>
+                  <stop offset="100%" stopColor="#84cc16"/>
+                </linearGradient>
+              </defs>
+              {/* Outer G shape - top-left arc */}
+              <path d="M50 8 C28 8 12 24 12 46 C12 68 28 84 50 84 C62 84 72 79 79 71 L79 52 L54 52 L54 62 L68 62 L68 68 C63 72 57 74 50 74 C34 74 22 62 22 46 C22 30 34 18 50 18 C58 18 65 21 70 27 L78 20 C71 13 61 8 50 8 Z" fill="url(#g1)"/>
+              {/* Inner G notch fill */}
+              <path d="M54 52 L79 52 L79 71 C75 76 70 80 64 82 L64 72 C67 70 70 67 71 64 L54 64 Z" fill="url(#g2)"/>
+            </svg>
+            <div className="brand-text-wrap">
+              <span className="brand-text-main">Gen.Z</span>
+              <span className="brand-text-sub">Nepal</span>
+            </div>
           </Link>
 
           <SearchBar />
