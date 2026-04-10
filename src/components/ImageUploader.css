@@ -1,0 +1,126 @@
+.img-uploader {
+  width: 100%;
+}
+
+.img-uploader-zone {
+  border: 2px dashed #e0e0e0;
+  border-radius: 6px;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  padding: 1.5rem;
+  text-align: center;
+  background: #fafafa;
+}
+
+.img-uploader-zone:hover,
+.img-uploader-zone.dragging {
+  border-color: #0ea5e9;
+  background: #f0f9ff;
+}
+
+.img-uploader-zone.uploading {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.img-uploader-text {
+  font-size: 0.85rem;
+  color: #888;
+  margin: 0;
+}
+
+.img-uploader-link {
+  color: #0ea5e9;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.img-uploader-hint {
+  font-size: 0.72rem;
+  color: #bbb;
+  margin: 0;
+}
+
+.img-uploader-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  color: #888;
+}
+
+.img-uploader-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid #eee;
+  border-top-color: #0ea5e9;
+  border-radius: 50%;
+  animation: spin 0.65s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Preview */
+.img-uploader-preview {
+  position: relative;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid #eee;
+}
+
+.img-uploader-preview img {
+  width: 100%;
+  max-height: 220px;
+  object-fit: contain;
+  display: block;
+  background: #fafafa;
+}
+
+.img-uploader-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: white;
+  font-size: 0.82rem;
+}
+
+.img-change-btn {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.img-change-btn:hover {
+  background: rgba(0,0,0,0.8);
+}
+
+.img-uploader-error {
+  font-size: 0.78rem;
+  color: #ef4444;
+  margin-top: 0.35rem;
+}

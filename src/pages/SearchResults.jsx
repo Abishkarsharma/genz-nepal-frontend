@@ -15,18 +15,40 @@ export default function SearchResults() {
   const [searchParams] = useSearchParams();
   const query = searchParams.get('q') || '';
   const [products, setProducts] = useState([]);
+  const [pagination, setPagination] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [sortBy, setSortBy] = useState('best');
   const [viewMode, setViewMode] = useState('grid');
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     if (!query) return;
     setLoading(true);
-    api.get(`/api/products?search=${encodeURIComponent(query)}`)
-      .then(({ data }) => setProducts(data))
+    setPage(1);
+    api.get(`/api/products?search=${encodeURIComponent(query)}&limit=20&page=1`)
+      .then(({ data }) => {
+        const items = Array.isArray(data) ? data : data.products || [];
+        setProducts(items);
+        setPagination(data.pagination || null);
+      })
       .catch(() => setProducts([]))
       .finally(() => setLoading(false));
   }, [query]);
+
+  const loadMore = async () => {
+    const nextPage = page + 1;
+    setLoadingMore(true);
+    try {
+      const { data } = await api.get(`/api/products?search=${encodeURIComponent(query)}&limit=20&page=${nextPage}`);
+      const items = Array.isArray(data) ? data : data.products || [];
+      setProducts((prev) => [...prev, ...items]);
+      setPagination(data.pagination || null);
+      setPage(nextPage);
+    } finally {
+      setLoadingMore(false);
+    }
+  };
 
   let sorted = [...products];
   if (sortBy === 'price_asc') sorted.sort((a, b) => a.price - b.price);
@@ -126,6 +148,14 @@ export default function SearchResults() {
                 {sorted.map((p) => (
                   <ProductCard key={p._id} product={p} listView={viewMode === 'list'} />
                 ))}
+              </div>
+            )}
+
+            {pagination?.hasNext && !loading && (
+              <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
+                <button className="btn btn-outline" onClick={loadMore} disabled={loadingMore}>
+                  {loadingMore ? 'Loading...' : `Load More (${pagination.total - products.length} remaining)`}
+                </button>
               </div>
             )}
           </div>

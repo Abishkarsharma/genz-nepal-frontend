@@ -1,6 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import api from '../api';
 import { useAuth } from '../context/AuthContext';
+import ImageUploader from '../components/ImageUploader';
 import './AdminDashboard.css';
 
 const authHeader = (token) => ({ headers: { Authorization: `Bearer ${token}` } });
@@ -70,22 +71,13 @@ function Overview({ token }) {
 function Products({ token }) {
   const [products, setProducts] = useState([]);
   const [form, setForm] = useState({ name: '', price: '', category: '', image: '', stock: '', description: '' });
-  const [imagePreview, setImagePreview] = useState('');
   const [editing, setEditing] = useState(null);
   const [error, setError] = useState('');
-  const imgRef = useRef();
 
-  const load = () => api.get('/api/products').then(({ data }) => setProducts(data));
+  const load = () => api.get('/api/products?limit=100').then(({ data }) => {
+    setProducts(Array.isArray(data) ? data : data.products || []);
+  });
   useEffect(() => { load(); }, []);
-
-  const handleImageFile = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    if (file.size > 5 * 1024 * 1024) { setError('Image must be under 5MB'); return; }
-    const reader = new FileReader();
-    reader.onload = (ev) => { setImagePreview(ev.target.result); setForm((f) => ({ ...f, image: ev.target.result })); };
-    reader.readAsDataURL(file);
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault(); setError('');
@@ -93,12 +85,12 @@ function Products({ token }) {
       if (editing) { await api.put(`/api/products/${editing}`, form, authHeader(token)); }
       else { await api.post('/api/products', form, authHeader(token)); }
       setForm({ name: '', price: '', category: '', image: '', stock: '', description: '' });
-      setImagePreview(''); setEditing(null); load();
+      setEditing(null); load();
     } catch (err) { setError(err.response?.data?.message || 'Failed'); }
   };
 
   const handleEdit = (p) => {
-    setEditing(p._id); setImagePreview(p.image || '');
+    setEditing(p._id);
     setForm({ name: p.name, price: p.price, category: p.category, image: p.image, stock: p.stock, description: p.description });
   };
 
@@ -137,28 +129,11 @@ function Products({ token }) {
           </div>
           <div className="form-group">
             <label>Product Image</label>
-            <div
-              className={`img-upload-zone ${imagePreview ? 'has-image' : ''}`}
-              onClick={() => !imagePreview && imgRef.current.click()}
-            >
-              <input ref={imgRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleImageFile} />
-              {imagePreview ? (
-                <div className="img-upload-preview">
-                  <img src={imagePreview} alt="preview" />
-                  <button type="button" className="img-change-btn" onClick={(e) => { e.stopPropagation(); imgRef.current.click(); }}>
-                    Change Image
-                  </button>
-                </div>
-              ) : (
-                <div className="img-upload-placeholder">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5">
-                    <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
-                  </svg>
-                  <p>Click to upload image</p>
-                  <p className="upload-hint">JPG, PNG, WEBP up to 5MB</p>
-                </div>
-              )}
-            </div>
+            <ImageUploader
+              token={token}
+              currentUrl={form.image}
+              onUpload={(url) => setForm((f) => ({ ...f, image: url }))}
+            />
           </div>
           <div className="form-group">
             <label>Description</label>
@@ -168,7 +143,7 @@ function Products({ token }) {
             <button type="submit" className="btn btn-primary btn-sm">{editing ? 'Update Product' : 'Add Product'}</button>
             {editing && (
               <button type="button" className="btn btn-outline btn-sm"
-                onClick={() => { setEditing(null); setImagePreview(''); setForm({ name: '', price: '', category: '', image: '', stock: '', description: '' }); }}>
+                onClick={() => { setEditing(null); setForm({ name: '', price: '', category: '', image: '', stock: '', description: '' }); }}>
                 Cancel
               </button>
             )}

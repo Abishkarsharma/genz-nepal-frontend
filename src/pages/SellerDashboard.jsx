@@ -1,6 +1,7 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import api from '../api';
 import { useAuth } from '../context/AuthContext';
+import ImageUploader from '../components/ImageUploader';
 import './AdminDashboard.css';
 import './SellerDashboard.css';
 
@@ -77,38 +78,17 @@ export default function SellerDashboard() {
 function SellerProducts({ token, userId }) {
   const [products, setProducts] = useState([]);
   const [form, setForm] = useState({ name: '', price: '', category: '', image: '', stock: '', description: '' });
-  const [imagePreview, setImagePreview] = useState('');
   const [editing, setEditing] = useState(null);
   const [error, setError] = useState('');
-  const [dragging, setDragging] = useState(false);
-  const imgRef = useRef();
   const headers = { headers: { Authorization: `Bearer ${token}` } };
 
   const load = () =>
-    api.get('/api/products').then(({ data }) =>
-      setProducts(data.filter((p) => String(p.createdBy) === userId))
-    );
+    api.get('/api/products?limit=100').then(({ data }) => {
+      const all = Array.isArray(data) ? data : data.products || [];
+      setProducts(all.filter((p) => String(p.createdBy) === userId));
+    });
 
   useEffect(() => { load(); }, []);
-
-  const handleImageFile = (file) => {
-    if (!file) return;
-    if (!file.type.startsWith('image/')) { setError('Please select an image file'); return; }
-    if (file.size > 5 * 1024 * 1024) { setError('Image must be under 5MB'); return; }
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      setImagePreview(ev.target.result);
-      setForm((f) => ({ ...f, image: ev.target.result }));
-      setError('');
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setDragging(false);
-    handleImageFile(e.dataTransfer.files[0]);
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -121,7 +101,6 @@ function SellerProducts({ token, userId }) {
         await api.post('/api/products', form, headers);
       }
       setForm({ name: '', price: '', category: '', image: '', stock: '', description: '' });
-      setImagePreview('');
       setEditing(null);
       load();
     } catch (err) {
@@ -131,7 +110,6 @@ function SellerProducts({ token, userId }) {
 
   const handleEdit = (p) => {
     setEditing(p._id);
-    setImagePreview(p.image || '');
     setForm({ name: p.name, price: p.price, category: p.category, image: p.image, stock: p.stock, description: p.description || '' });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -200,43 +178,11 @@ function SellerProducts({ token, userId }) {
           {/* Image upload — file only, no URL */}
           <div className="form-group">
             <label>Product Image</label>
-            <div
-              className={`img-upload-zone ${dragging ? 'dragging' : ''} ${imagePreview ? 'has-image' : ''}`}
-              onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
-              onDragLeave={() => setDragging(false)}
-              onDrop={handleDrop}
-              onClick={() => !imagePreview && imgRef.current.click()}
-            >
-              <input
-                ref={imgRef}
-                type="file"
-                accept="image/*"
-                style={{ display: 'none' }}
-                onChange={(e) => handleImageFile(e.target.files[0])}
-              />
-              {imagePreview ? (
-                <div className="img-upload-preview">
-                  <img src={imagePreview} alt="Preview" />
-                  <button
-                    type="button"
-                    className="img-change-btn"
-                    onClick={(e) => { e.stopPropagation(); imgRef.current.click(); }}
-                  >
-                    Change Image
-                  </button>
-                </div>
-              ) : (
-                <div className="img-upload-placeholder">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5">
-                    <rect x="3" y="3" width="18" height="18" rx="2"/>
-                    <circle cx="8.5" cy="8.5" r="1.5"/>
-                    <polyline points="21 15 16 10 5 21"/>
-                  </svg>
-                  <p>Drag &amp; drop or <span className="upload-link">browse</span></p>
-                  <p className="upload-hint">JPG, PNG, WEBP up to 5MB</p>
-                </div>
-              )}
-            </div>
+            <ImageUploader
+              token={token}
+              currentUrl={form.image}
+              onUpload={(url) => setForm((f) => ({ ...f, image: url }))}
+            />
           </div>
 
           <div className="form-group">

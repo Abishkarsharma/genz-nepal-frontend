@@ -31,8 +31,10 @@ export default function Home() {
       if (category !== 'All') params.set('category', category);
       const searchParam = new URLSearchParams(location.search).get('search');
       if (searchParam) params.set('search', searchParam);
+      params.set('limit', '40'); // load 40 at a time on home
       const { data } = await api.get(`/api/products?${params}`);
-      setProducts(data);
+      // Handle both paginated { products } and legacy plain array
+      setProducts(Array.isArray(data) ? data : data.products || []);
     } catch (err) {
       console.error(err);
     } finally {
