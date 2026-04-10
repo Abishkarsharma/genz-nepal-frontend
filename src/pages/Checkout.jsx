@@ -102,44 +102,26 @@ export default function Checkout() {
     }
   };
 
-  // eSewa — form-based redirect (test merchant code: EPAYTEST)
+  // eSewa — backend generates proper HMAC signature
   const handleEsewa = async () => {
-    // First create a pending order to get the order ID
     setLoading(true);
     setError('');
     try {
       const items = cart.map((i) => ({
         product: i._id, name: i.name, price: i.price, quantity: i.quantity, image: i.image,
       }));
-      const { data: order } = await api.post('/api/orders', {
-        items, shippingAddress: form, paymentMethod: 'eSewa',
-        paymentStatus: 'pending', paymentRef: '', subtotal, shipping: SHIPPING,
+
+      // Backend creates order + generates signed form data
+      const { data } = await api.post('/api/esewa/initiate', {
+        items, shippingAddress: form, subtotal, shipping: SHIPPING,
       }, { headers: { Authorization: `Bearer ${token}` } });
 
-      // Submit eSewa form
-      const merchantCode = import.meta.env.VITE_ESEWA_MERCHANT_CODE || 'EPAYTEST';
-      const successUrl = `${window.location.origin}/payment-success`;
-      const failureUrl = `${window.location.origin}/checkout`;
-
+      // Submit form to eSewa
       const form_el = document.createElement('form');
       form_el.method = 'POST';
-      form_el.action = 'https://rc-epay.esewa.com.np/api/epay/main/v2/form'; // eSewa v2 test URL
+      form_el.action = data.esewaUrl;
 
-      const fields = {
-        amount: total,
-        tax_amount: 0,
-        total_amount: total,
-        transaction_uuid: order._id,
-        product_code: merchantCode,
-        product_service_charge: 0,
-        product_delivery_charge: 0,
-        success_url: successUrl,
-        failure_url: failureUrl,
-        signed_field_names: 'total_amount,transaction_uuid,product_code',
-        signature: btoa(`total_amount=${total},transaction_uuid=${order._id},product_code=${merchantCode}`),
-      };
-
-      Object.entries(fields).forEach(([key, val]) => {
+      Object.entries(data.formData).forEach(([key, val]) => {
         const input = document.createElement('input');
         input.type = 'hidden';
         input.name = key;

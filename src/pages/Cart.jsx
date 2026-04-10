@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { SHIPPING } from '../constants';
@@ -7,19 +7,38 @@ import './Cart.css';
 export default function Cart() {
   const { cart, removeFromCart, updateQty, subtotal } = useCart();
   const navigate = useNavigate();
-  const [checkedItems, setCheckedItems] = useState({});
-  const [selectAll, setSelectAll] = useState(false);
   const [voucher, setVoucher] = useState('');
   const [wishlist, setWishlist] = useState({});
 
+  // All items checked by default
+  const [checkedItems, setCheckedItems] = useState(() => {
+    const initial = {};
+    try {
+      const saved = localStorage.getItem('cart');
+      const items = saved ? JSON.parse(saved) : [];
+      items.forEach((i) => { initial[i._id] = true; });
+    } catch {}
+    return initial;
+  });
+
+  // Auto-check newly added items
+  useEffect(() => {
+    setCheckedItems((prev) => {
+      const updated = { ...prev };
+      cart.forEach((i) => {
+        if (!(i._id in updated)) updated[i._id] = true;
+      });
+      return updated;
+    });
+  }, [cart]);
+
+  const allChecked = cart.length > 0 && cart.every((i) => checkedItems[i._id]);
+  const checkedCount = Object.values(checkedItems).filter(Boolean).length;
   const shipping = cart.length > 0 ? SHIPPING : 0;
   const total = subtotal + shipping;
 
-  const checkedCount = Object.values(checkedItems).filter(Boolean).length;
-
   const toggleSelectAll = () => {
-    const next = !selectAll;
-    setSelectAll(next);
+    const next = !allChecked;
     const updated = {};
     cart.forEach((i) => (updated[i._id] = next));
     setCheckedItems(updated);
@@ -38,10 +57,8 @@ export default function Cart() {
       if (checked) removeFromCart(id);
     });
     setCheckedItems({});
-    setSelectAll(false);
   };
 
-  // Group by seller (category as seller name fallback)
   const grouped = cart.reduce((acc, item) => {
     const seller = item.seller || item.category || 'Store';
     if (!acc[seller]) acc[seller] = [];
@@ -66,14 +83,13 @@ export default function Cart() {
   return (
     <div className="cart-page-wrap">
       <div className="cart-page container">
-        {/* Left: Items */}
         <div className="cart-left">
           {/* Select All Bar */}
           <div className="cart-select-bar">
             <label className="cart-checkbox-label">
               <input
                 type="checkbox"
-                checked={selectAll}
+                checked={allChecked}
                 onChange={toggleSelectAll}
                 className="cart-checkbox"
               />
@@ -82,24 +98,22 @@ export default function Cart() {
             {checkedCount > 0 && (
               <button className="cart-delete-btn" onClick={deleteChecked}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/>
+                  <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/>
+                  <path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/>
                 </svg>
                 DELETE
               </button>
             )}
           </div>
 
-          {/* Grouped Items */}
           {Object.entries(grouped).map(([seller, items]) => (
             <div key={seller} className="cart-seller-group">
               <div className="cart-seller-header">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                  <polyline points="9 22 9 12 15 12 15 22"/>
                 </svg>
                 <span className="seller-name">{seller}</span>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <polyline points="9 18 15 12 9 6"/>
-                </svg>
               </div>
 
               {items.map((item) => (
@@ -124,19 +138,18 @@ export default function Cart() {
                       <button
                         className={`cart-wishlist-btn ${wishlist[item._id] ? 'wishlisted' : ''}`}
                         onClick={() => toggleWishlist(item._id)}
-                        aria-label="Add to wishlist"
+                        aria-label="Wishlist"
                       >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill={wishlist[item._id] ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
+                        <svg width="16" height="16" viewBox="0 0 24 24"
+                          fill={wishlist[item._id] ? 'currentColor' : 'none'}
+                          stroke="currentColor" strokeWidth="2">
                           <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                         </svg>
                       </button>
-                      <button
-                        className="cart-remove-btn"
-                        onClick={() => removeFromCart(item._id)}
-                        aria-label="Remove item"
-                      >
+                      <button className="cart-remove-btn" onClick={() => removeFromCart(item._id)} aria-label="Remove">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/>
+                          <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/>
+                          <path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/>
                         </svg>
                       </button>
                     </div>
@@ -149,7 +162,6 @@ export default function Cart() {
                         className="qty-btn"
                         onClick={() => updateQty(item._id, item.quantity + 1)}
                         disabled={item.stock != null && item.quantity >= item.stock}
-                        title={item.stock != null && item.quantity >= item.stock ? `Max ${item.stock} available` : ''}
                       >+</button>
                     </div>
                     {item.stock != null && item.quantity >= item.stock && (
@@ -162,7 +174,7 @@ export default function Cart() {
           ))}
         </div>
 
-        {/* Right: Order Summary */}
+        {/* Order Summary */}
         <div className="cart-summary">
           <h2 className="summary-title">Order Summary</h2>
           <div className="summary-row">
@@ -183,16 +195,11 @@ export default function Cart() {
             />
             <button className="voucher-apply-btn">APPLY</button>
           </div>
-
           <div className="summary-total-row">
             <span>Total</span>
             <span className="summary-total-amount">NPR {total.toLocaleString()}</span>
           </div>
-
-          <button
-            className="checkout-btn"
-            onClick={() => navigate('/checkout')}
-          >
+          <button className="checkout-btn" onClick={() => navigate('/checkout')}>
             PROCEED TO CHECKOUT ({checkedCount || cart.length})
           </button>
         </div>
