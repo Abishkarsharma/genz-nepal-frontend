@@ -361,3 +361,29 @@
   margin-top: 0.2rem;
 }
 
+
+.cancel-order-btn {
+  margin-left: auto;
+  padding: 0.3rem 0.85rem;
+  background: white;
+  color: #ef4444;
+  border: 1.5px solid #ef4444;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  flex-shrink: 0;
+}
+
+.cancel-order-btn:hover {
+  background: #ef4444;
+  color: white;
+}
+
+.cancel-order-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
