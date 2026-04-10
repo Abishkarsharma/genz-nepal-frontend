@@ -123,16 +123,20 @@ export default function Checkout() {
 
       const form_el = document.createElement('form');
       form_el.method = 'POST';
-      form_el.action = 'https://uat.esewa.com.np/epay/main'; // use esewa.com.np for production
+      form_el.action = 'https://rc-epay.esewa.com.np/api/epay/main/v2/form'; // eSewa v2 test URL
 
       const fields = {
-        amt: total,
-        psc: 0, pdc: 0, txAmt: 0,
-        tAmt: total,
-        pid: order._id,
-        scd: merchantCode,
-        su: successUrl,
-        fu: failureUrl,
+        amount: total,
+        tax_amount: 0,
+        total_amount: total,
+        transaction_uuid: order._id,
+        product_code: merchantCode,
+        product_service_charge: 0,
+        product_delivery_charge: 0,
+        success_url: successUrl,
+        failure_url: failureUrl,
+        signed_field_names: 'total_amount,transaction_uuid,product_code',
+        signature: btoa(`total_amount=${total},transaction_uuid=${order._id},product_code=${merchantCode}`),
       };
 
       Object.entries(fields).forEach(([key, val]) => {
