@@ -20,13 +20,15 @@ export function CartProvider({ children }) {
   const addToCart = (product, qty = 1) => {
     setCart((prev) => {
       const existing = prev.find((i) => i._id === product._id);
+      const maxStock = product.stock ?? 9999;
       let updated;
       if (existing) {
+        const newQty = Math.min(existing.quantity + qty, maxStock);
         updated = prev.map((i) =>
-          i._id === product._id ? { ...i, quantity: i.quantity + qty } : i
+          i._id === product._id ? { ...i, quantity: newQty } : i
         );
       } else {
-        updated = [...prev, { ...product, quantity: qty }];
+        updated = [...prev, { ...product, quantity: Math.min(qty, maxStock) }];
       }
       localStorage.setItem('cart', JSON.stringify(updated));
       return updated;
@@ -40,7 +42,10 @@ export function CartProvider({ children }) {
 
   const updateQty = (id, qty) => {
     if (qty < 1) return removeFromCart(id);
-    const updated = cart.map((i) => (i._id === id ? { ...i, quantity: qty } : i));
+    const item = cart.find((i) => i._id === id);
+    const maxStock = item?.stock ?? 9999;
+    const capped = Math.min(qty, maxStock);
+    const updated = cart.map((i) => (i._id === id ? { ...i, quantity: capped } : i));
     saveCart(updated);
   };
 

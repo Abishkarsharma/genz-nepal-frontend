@@ -145,8 +145,16 @@ export default function Cart() {
                     <div className="qty-control">
                       <button className="qty-btn" onClick={() => updateQty(item._id, item.quantity - 1)}>−</button>
                       <span className="qty-value">{item.quantity}</span>
-                      <button className="qty-btn" onClick={() => updateQty(item._id, item.quantity + 1)}>+</button>
+                      <button
+                        className="qty-btn"
+                        onClick={() => updateQty(item._id, item.quantity + 1)}
+                        disabled={item.stock != null && item.quantity >= item.stock}
+                        title={item.stock != null && item.quantity >= item.stock ? `Max ${item.stock} available` : ''}
+                      >+</button>
                     </div>
+                    {item.stock != null && item.quantity >= item.stock && (
+                      <p className="cart-stock-warn">Max {item.stock} available</p>
+                    )}
                   </div>
                 </div>
               ))}

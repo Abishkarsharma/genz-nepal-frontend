@@ -336,7 +336,17 @@
   color: #333;
 }
 
-@media (max-width: 768px) {
+.qty-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.cart-stock-warn {
+  font-size: 0.68rem;
+  color: #ef4444;
+  margin-top: 0.2rem;
+  text-align: center;
+}
   .cart-page {
     grid-template-columns: 1fr;
   }
