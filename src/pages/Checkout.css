@@ -1,4 +1,4 @@
-.checkout-wrap {
+﻿.checkout-wrap {
   background: #f5f5f5;
   min-height: 100vh;
   padding: 1.5rem 1rem 3rem;
@@ -28,7 +28,7 @@
 
 .progress-fill {
   height: 100%;
-  background: #f57224;
+  background: #0ea5e9;
   border-radius: 2px;
   transition: width 0.4s ease;
 }
@@ -50,7 +50,7 @@
 
 .progress-step.done,
 .progress-step.current {
-  color: #f57224;
+  color: #0ea5e9;
 }
 
 .progress-dot {
@@ -68,14 +68,14 @@
 }
 
 .progress-step.done .progress-dot {
-  background: #f57224;
-  border-color: #f57224;
+  background: #0ea5e9;
+  border-color: #0ea5e9;
   color: white;
 }
 
 .progress-step.current .progress-dot {
-  border-color: #f57224;
-  color: #f57224;
+  border-color: #0ea5e9;
+  color: #0ea5e9;
 }
 
 /* ── Body layout ── */
@@ -146,7 +146,7 @@
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-  border-color: #f57224;
+  border-color: #0ea5e9;
 }
 
 .form-group textarea {
@@ -179,8 +179,8 @@
 }
 
 .payment-card.selected {
-  border-color: #f57224;
-  background: #fef3ec;
+  border-color: #0ea5e9;
+  background: #f0f9ff;
 }
 
 .payment-icon {
@@ -204,7 +204,7 @@
   margin-left: auto;
   width: 20px;
   height: 20px;
-  background: #f57224;
+  background: #0ea5e9;
   color: white;
   border-radius: 50%;
   display: flex;
@@ -225,7 +225,7 @@
 .checkout-next-btn {
   flex: 1;
   padding: 0.75rem;
-  background: #f57224;
+  background: #0ea5e9;
   color: white;
   border: none;
   border-radius: 4px;
@@ -238,7 +238,7 @@
 }
 
 .checkout-next-btn:hover {
-  background: #e0641a;
+  background: #0284c7;
 }
 
 .checkout-back-btn {
@@ -263,7 +263,7 @@
 .checkout-place-btn {
   flex: 1;
   padding: 0.75rem;
-  background: #f57224;
+  background: #0ea5e9;
   color: white;
   border: none;
   border-radius: 4px;
@@ -276,7 +276,7 @@
 }
 
 .checkout-place-btn:hover {
-  background: #e0641a;
+  background: #0284c7;
 }
 
 .checkout-place-btn:disabled {
@@ -315,7 +315,7 @@
 .edit-link {
   background: none;
   border: none;
-  color: #f57224;
+  color: #0ea5e9;
   font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
@@ -380,7 +380,7 @@
 .review-item-price {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #f57224;
+  color: #0ea5e9;
   flex-shrink: 0;
 }
 
@@ -433,7 +433,7 @@
   position: absolute;
   top: -6px;
   right: -6px;
-  background: #f57224;
+  background: #0ea5e9;
   color: white;
   font-size: 0.6rem;
   font-weight: 700;
@@ -504,3 +504,4 @@
     grid-template-columns: 1fr;
   }
 }
+

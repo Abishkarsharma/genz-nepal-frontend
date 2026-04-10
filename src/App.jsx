@@ -19,6 +19,7 @@ import AboutUs from './pages/AboutUs';
 import Contact from './pages/Contact';
 import ShippingPolicy from './pages/ShippingPolicy';
 import TermsOfService from './pages/TermsOfService';
+import SearchResults from './pages/SearchResults';
 
 export default function App() {
   return (
@@ -51,6 +52,7 @@ export default function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/shipping-policy" element={<ShippingPolicy />} />
           <Route path="/terms" element={<TermsOfService />} />
+          <Route path="/search" element={<SearchResults />} />
         </Routes>
       </main>
       <Footer />

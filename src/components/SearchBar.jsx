@@ -43,12 +43,12 @@ export default function SearchBar() {
     setShow(false);
     navigate(`/product/${id}`);
   };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (query.trim()) {
       setShow(false);
-      navigate(`/?search=${encodeURIComponent(query.trim())}`);
+      setQuery('');
+      navigate(`/search?q=${encodeURIComponent(query.trim())}`);
     }
   };
 

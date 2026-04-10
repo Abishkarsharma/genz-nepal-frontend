@@ -1,4 +1,4 @@
-.detail-page {
+﻿.detail-page {
   padding: 2rem 1rem;
 }
 
@@ -70,7 +70,7 @@
 .detail-price-main {
   font-size: 1.6rem;
   font-weight: 700;
-  color: #f57224;
+  color: #0ea5e9;
 }
 
 .detail-price-original {
@@ -139,3 +139,4 @@
     gap: 1.5rem;
   }
 }
+

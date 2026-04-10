@@ -1,4 +1,4 @@
-.admin-layout {
+﻿.admin-layout {
   display: flex;
   min-height: calc(100vh - 60px);
 }
@@ -156,7 +156,7 @@
   font-weight: 600;
 }
 
-.status-select.status-pending { background: #fef3c7; color: #d97706; border-color: #fde68a; }
+.status-select.status-pending { background: #e0f2fe; color: #d97706; border-color: #fde68a; }
 .status-select.status-processing { background: #dbeafe; color: #2563eb; border-color: #bfdbfe; }
 .status-select.status-shipped { background: #ede9fe; color: var(--purple); border-color: #ddd6fe; }
 .status-select.status-delivered { background: #d1fae5; color: #059669; border-color: #a7f3d0; }
@@ -202,8 +202,8 @@
 }
 
 .img-upload-zone:hover {
-  border-color: #f57224;
-  background: #fef3ec;
+  border-color: #0ea5e9;
+  background: #f0f9ff;
 }
 
 .img-upload-zone.has-image {
@@ -259,3 +259,4 @@
   cursor: pointer;
   font-family: inherit;
 }
+

@@ -1,4 +1,4 @@
-.footer {
+﻿.footer {
   background: #111;
   color: #888;
   margin-top: 3rem;
@@ -29,7 +29,7 @@
 .footer-logo-icon {
   width: 30px;
   height: 30px;
-  background: #f57224;
+  background: #0ea5e9;
   color: white;
   border-radius: 5px;
   display: flex;
@@ -67,9 +67,9 @@
 }
 
 .footer-socials a:hover {
-  background: #f57224;
+  background: #0ea5e9;
   color: white;
-  border-color: #f57224;
+  border-color: #0ea5e9;
 }
 
 .footer-col h4 {
@@ -91,7 +91,7 @@
 }
 
 .footer-col a:hover {
-  color: #f57224;
+  color: #0ea5e9;
 }
 
 .footer-bottom {
@@ -142,3 +142,4 @@
     grid-template-columns: 1fr;
   }
 }
+

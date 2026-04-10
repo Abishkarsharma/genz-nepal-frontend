@@ -1,4 +1,4 @@
-.searchbar-wrap {
+﻿.searchbar-wrap {
   position: relative;
   flex: 1;
   max-width: 560px;
@@ -6,7 +6,7 @@
 
 .searchbar-form {
   display: flex;
-  border: 2px solid #f57224;
+  border: 2px solid #0ea5e9;
   border-radius: 4px;
   overflow: hidden;
   background: white;
@@ -31,7 +31,7 @@
 
 .searchbar-btn {
   padding: 0 1.1rem;
-  background: #f57224;
+  background: #0ea5e9;
   border: none;
   cursor: pointer;
   display: flex;
@@ -44,7 +44,7 @@
 }
 
 .searchbar-btn:hover {
-  background: #e0641a;
+  background: #0284c7;
 }
 
 .searchbar-dropdown {
@@ -72,7 +72,7 @@
 }
 
 .search-item:hover {
-  background: #fef3ec;
+  background: #f0f9ff;
 }
 
 .search-item.muted {
@@ -107,7 +107,8 @@
 
 .search-price {
   font-size: 0.78rem;
-  color: #f57224;
+  color: #0ea5e9;
   font-weight: 600;
   margin: 0;
 }
+

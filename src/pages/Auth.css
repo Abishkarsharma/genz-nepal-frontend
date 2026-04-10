@@ -1,4 +1,4 @@
-.auth-page {
+﻿.auth-page {
   min-height: calc(100vh - 100px);
   display: flex;
   align-items: center;
@@ -20,7 +20,7 @@
 .auth-otp-icon {
   width: 56px;
   height: 56px;
-  background: #fef3ec;
+  background: #f0f9ff;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -50,13 +50,13 @@
   width: 100%;
   justify-content: center;
   margin-top: 0.5rem;
-  background: #f57224;
+  background: #0ea5e9;
   border-radius: 4px;
   padding: 0.7rem;
 }
 
 .auth-btn:hover {
-  background: #e0641a;
+  background: #0284c7;
 }
 
 .auth-switch {
@@ -67,7 +67,7 @@
 }
 
 .auth-switch a {
-  color: #f57224;
+  color: #0ea5e9;
   font-weight: 600;
   text-decoration: none;
 }
@@ -79,7 +79,7 @@
 .link-btn {
   background: none;
   border: none;
-  color: #f57224;
+  color: #0ea5e9;
   font-weight: 600;
   font-size: 0.82rem;
   cursor: pointer;
@@ -99,3 +99,4 @@
   letter-spacing: 0.3em;
   padding: 0.75rem;
 }
+

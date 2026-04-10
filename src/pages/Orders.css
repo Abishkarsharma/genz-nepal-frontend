@@ -1,4 +1,4 @@
-.orders-wrap {
+﻿.orders-wrap {
   background: #f5f5f5;
   min-height: 100vh;
   padding: 1.5rem 0 3rem;
@@ -90,7 +90,7 @@
   text-transform: capitalize;
 }
 
-.status-pending { background: #fef3c7; color: #d97706; }
+.status-pending { background: #e0f2fe; color: #d97706; }
 .status-processing { background: #dbeafe; color: #2563eb; }
 .status-shipped { background: #ede9fe; color: #7c3aed; }
 .status-delivered { background: #d1fae5; color: #059669; }
@@ -99,7 +99,7 @@
 .order-total-badge {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #f57224;
+  color: #0ea5e9;
 }
 
 .expand-icon {
@@ -180,15 +180,15 @@
 }
 
 .tracker-node.done .tracker-circle {
-  background: #f57224;
-  border-color: #f57224;
+  background: #0ea5e9;
+  border-color: #0ea5e9;
   color: white;
 }
 
 .tracker-node.active .tracker-circle {
-  border-color: #f57224;
-  color: #f57224;
-  box-shadow: 0 0 0 3px rgba(245,114,36,0.15);
+  border-color: #0ea5e9;
+  color: #0ea5e9;
+  box-shadow: 0 0 0 3px rgba(14,165,233,0.15);
 }
 
 .tracker-label {
@@ -199,7 +199,7 @@
 
 .tracker-node.done .tracker-label,
 .tracker-node.active .tracker-label {
-  color: #f57224;
+  color: #0ea5e9;
   font-weight: 600;
 }
 
@@ -212,7 +212,7 @@
 }
 
 .tracker-line.filled {
-  background: #f57224;
+  background: #0ea5e9;
 }
 
 .tracker-cancelled {
@@ -292,7 +292,7 @@
 .order-detail-item-total {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #f57224;
+  color: #0ea5e9;
   flex-shrink: 0;
 }
 
@@ -336,7 +336,7 @@
 }
 
 .payment-status-pill.paid { background: #d1fae5; color: #059669; }
-.payment-status-pill.pending-pay { background: #fef3c7; color: #d97706; }
+.payment-status-pill.pending-pay { background: #e0f2fe; color: #d97706; }
 
 .order-totals {
   border-top: 1px solid #f0f0f0;
@@ -360,3 +360,4 @@
   padding-top: 0.4rem;
   margin-top: 0.2rem;
 }
+

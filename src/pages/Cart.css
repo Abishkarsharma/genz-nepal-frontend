@@ -1,4 +1,4 @@
-.cart-page-wrap {
+﻿.cart-page-wrap {
   background: #f5f5f5;
   min-height: 100vh;
   padding: 1.5rem 0 3rem;
@@ -43,7 +43,7 @@
 .cart-checkbox {
   width: 16px;
   height: 16px;
-  accent-color: #f57224;
+  accent-color: #0ea5e9;
   cursor: pointer;
   flex-shrink: 0;
 }
@@ -88,7 +88,7 @@
 
 .seller-name {
   flex: 1;
-  color: #f57224;
+  color: #0ea5e9;
 }
 
 /* Item row */
@@ -146,7 +146,7 @@
 .cart-price-current {
   font-size: 1rem;
   font-weight: 700;
-  color: #f57224;
+  color: #0ea5e9;
 }
 
 .cart-price-original {
@@ -267,12 +267,12 @@
 }
 
 .voucher-input:focus {
-  border-color: #f57224;
+  border-color: #0ea5e9;
 }
 
 .voucher-apply-btn {
   padding: 0.55rem 0.9rem;
-  background: #f57224;
+  background: #0ea5e9;
   color: white;
   border: none;
   border-radius: 4px;
@@ -284,7 +284,7 @@
 }
 
 .voucher-apply-btn:hover {
-  background: #e0641a;
+  background: #0284c7;
 }
 
 .summary-total-row {
@@ -302,13 +302,13 @@
 .summary-total-amount {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #f57224;
+  color: #0ea5e9;
 }
 
 .checkout-btn {
   width: 100%;
   padding: 0.85rem;
-  background: #f57224;
+  background: #0ea5e9;
   color: white;
   border: none;
   border-radius: 4px;
@@ -320,7 +320,7 @@
 }
 
 .checkout-btn:hover {
-  background: #e0641a;
+  background: #0284c7;
 }
 
 /* Empty state */
@@ -353,3 +353,4 @@
     margin-left: auto;
   }
 }
+

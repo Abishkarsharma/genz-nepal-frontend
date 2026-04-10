@@ -1,4 +1,4 @@
-.site-header {
+﻿.site-header {
   position: sticky;
   top: 0;
   z-index: 200;
@@ -6,7 +6,7 @@
 
 /* Top utility bar */
 .topbar {
-  background: #f57224;
+  background: #0ea5e9;
   color: white;
   font-size: 0.75rem;
 }
@@ -93,7 +93,7 @@
 .brand-icon {
   width: 36px;
   height: 36px;
-  background: #f57224;
+  background: #0ea5e9;
   color: white;
   border-radius: 6px;
   display: flex;
@@ -133,7 +133,7 @@
   position: absolute;
   top: 0;
   right: 0;
-  background: #f57224;
+  background: #0ea5e9;
   color: white;
   font-size: 0.6rem;
   font-weight: 700;
@@ -204,8 +204,8 @@
 
 .mobile-menu a:hover,
 .mobile-logout:hover {
-  background: #fef3ec;
-  color: #f57224;
+  background: #f0f9ff;
+  color: #0ea5e9;
 }
 
 @media (max-width: 640px) {
@@ -217,3 +217,4 @@
 @media (min-width: 641px) {
   .mobile-menu { display: none; }
 }
+

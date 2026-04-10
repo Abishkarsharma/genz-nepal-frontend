@@ -1,4 +1,4 @@
-.product-card {
+﻿.product-card {
   display: flex;
   flex-direction: column;
   background: #fff;
@@ -41,7 +41,7 @@
   position: absolute;
   top: 8px;
   right: 8px;
-  background: #f57224;
+  background: #0ea5e9;
   color: white;
   font-size: 0.68rem;
   font-weight: 700;
@@ -81,7 +81,7 @@
 .product-price {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #f57224;
+  color: #0ea5e9;
 }
 
 .product-original {
@@ -99,7 +99,7 @@
 .product-add-btn {
   margin-top: auto;
   padding: 0.45rem 0;
-  background: #f57224;
+  background: #0ea5e9;
   color: white;
   border: none;
   border-radius: 3px;
@@ -113,7 +113,7 @@
 }
 
 .product-add-btn:hover {
-  background: #e0641a;
+  background: #0284c7;
 }
 
 .product-add-btn.added {
@@ -179,7 +179,7 @@
 .list-card-price {
   font-size: 1rem;
   font-weight: 700;
-  color: #f57224;
+  color: #0ea5e9;
 }
 
 .list-card-original {
@@ -190,7 +190,7 @@
 
 .list-card-discount {
   font-size: 0.75rem;
-  color: #f57224;
+  color: #0ea5e9;
   font-weight: 600;
 }
 
@@ -203,7 +203,7 @@
 .list-add-btn {
   flex-shrink: 0;
   padding: 0.5rem 1rem;
-  background: #f57224;
+  background: #0ea5e9;
   color: white;
   border: none;
   border-radius: 3px;
@@ -216,5 +216,6 @@
 }
 
 .list-add-btn:hover {
-  background: #e0641a;
+  background: #0284c7;
 }
+

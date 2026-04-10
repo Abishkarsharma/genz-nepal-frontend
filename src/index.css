@@ -1,13 +1,13 @@
-* {
+﻿* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
 :root {
-  --orange: #f57224;
-  --orange-dark: #e0641a;
-  --orange-light: #fef3ec;
+  --orange: #0ea5e9;
+  --orange-dark: #0284c7;
+  --orange-light: #f0f9ff;
   --purple: #6c3fc5;
   --purple-light: #f3eeff;
   --purple-dark: #4e2d9a;
@@ -283,3 +283,5 @@ label {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+
