@@ -408,3 +408,78 @@
   }
 }
 
+
+/* ── Dark Mode ── */
+[data-theme="dark"] .cart-page-wrap {
+  background: var(--bg);
+}
+
+[data-theme="dark"] .cart-select-bar,
+[data-theme="dark"] .cart-seller-group,
+[data-theme="dark"] .cart-summary {
+  background: var(--card);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .cart-checkbox-label,
+[data-theme="dark"] .cart-item-name,
+[data-theme="dark"] .summary-title,
+[data-theme="dark"] .summary-total-row {
+  color: var(--text);
+}
+
+[data-theme="dark"] .cart-seller-header {
+  border-bottom-color: var(--card-border);
+  color: var(--text);
+}
+
+[data-theme="dark"] .cart-item-row {
+  border-bottom-color: var(--card-border);
+}
+
+[data-theme="dark"] .cart-item-img {
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .cart-item-meta,
+[data-theme="dark"] .cart-price-original,
+[data-theme="dark"] .summary-row {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .qty-control {
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .qty-btn {
+  background: var(--input-bg);
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .qty-btn:hover {
+  background: #2d3748;
+}
+
+[data-theme="dark"] .qty-value {
+  background: var(--card);
+  color: var(--text);
+}
+
+[data-theme="dark"] .summary-total-row,
+[data-theme="dark"] .summary-title {
+  border-bottom-color: var(--card-border);
+}
+
+[data-theme="dark"] .voucher-input {
+  background: var(--input-bg);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+[data-theme="dark"] .empty-state h3 {
+  color: var(--text);
+}
+
+[data-theme="dark"] .cart-delete-btn {
+  color: var(--text-muted);
+}

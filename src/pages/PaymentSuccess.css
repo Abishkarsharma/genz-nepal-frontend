@@ -118,3 +118,51 @@
   flex-direction: column;
   gap: 0.6rem;
 }
+
+/* ── Dark Mode ── */
+[data-theme="dark"] .success-wrap {
+  background: var(--bg);
+}
+
+[data-theme="dark"] .success-card {
+  background: var(--card);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .success-title {
+  color: var(--text);
+}
+
+[data-theme="dark"] .success-sub {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .success-details,
+[data-theme="dark"] .success-address {
+  background: var(--input-bg);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .detail-row {
+  border-bottom-color: var(--card-border);
+}
+
+[data-theme="dark"] .detail-row span:first-child {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .detail-val {
+  color: var(--text);
+}
+
+[data-theme="dark"] .success-address-label {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .success-address-name {
+  color: var(--text);
+}
+
+[data-theme="dark"] .success-address-line {
+  color: var(--text-muted);
+}

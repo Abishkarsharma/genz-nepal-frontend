@@ -272,3 +272,41 @@
     padding: 0.75rem;
   }
 }
+
+/* ── Dark Mode ── */
+[data-theme="dark"] .product-card {
+  background: var(--card);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .product-img-wrap {
+  background: #252d3d;
+}
+
+[data-theme="dark"] .product-name {
+  color: var(--text);
+}
+
+[data-theme="dark"] .product-sold,
+[data-theme="dark"] .product-original {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .product-list-card {
+  background: var(--card);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .list-card-img {
+  background: #252d3d;
+}
+
+[data-theme="dark"] .list-card-name {
+  color: var(--text);
+}
+
+[data-theme="dark"] .list-card-meta,
+[data-theme="dark"] .list-card-sold,
+[data-theme="dark"] .list-card-original {
+  color: var(--text-muted);
+}

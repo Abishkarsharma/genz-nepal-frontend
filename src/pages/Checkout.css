@@ -626,3 +626,170 @@
   font-family: monospace;
   letter-spacing: 0.03em;
 }
+
+/* ── Dark Mode ── */
+[data-theme="dark"] .checkout-wrap {
+  background: var(--bg);
+}
+
+[data-theme="dark"] .checkout-progress {
+  background: var(--card);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .progress-track {
+  background: var(--border);
+}
+
+[data-theme="dark"] .progress-dot {
+  background: var(--card);
+  border-color: var(--border);
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .progress-step.done .progress-dot,
+[data-theme="dark"] .progress-step.current .progress-dot {
+  background: #0ea5e9;
+  border-color: #0ea5e9;
+  color: white;
+}
+
+[data-theme="dark"] .checkout-section {
+  background: var(--card);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .section-title {
+  color: var(--text);
+  border-bottom-color: var(--card-border);
+}
+
+[data-theme="dark"] .form-group label {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .form-group input,
+[data-theme="dark"] .form-group select,
+[data-theme="dark"] .form-group textarea {
+  background: var(--input-bg);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+[data-theme="dark"] .payment-card {
+  background: var(--input-bg);
+  border-color: var(--border);
+}
+
+[data-theme="dark"] .payment-card:hover {
+  border-color: #0ea5e9;
+  background: #0c2340;
+}
+
+[data-theme="dark"] .payment-card.selected {
+  background: #0c2340;
+  border-color: #0ea5e9;
+}
+
+[data-theme="dark"] .payment-icon-wrap {
+  background: var(--card);
+}
+
+[data-theme="dark"] .payment-name {
+  color: var(--text);
+}
+
+[data-theme="dark"] .payment-desc {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .checkout-back-btn {
+  background: var(--card);
+  border-color: var(--border);
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .checkout-back-btn:hover {
+  border-color: var(--text-muted);
+  color: var(--text);
+}
+
+[data-theme="dark"] .review-block {
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .review-block-header {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .review-name {
+  color: var(--text);
+}
+
+[data-theme="dark"] .review-detail {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .review-item {
+  border-bottom-color: var(--card-border);
+}
+
+[data-theme="dark"] .review-item-img {
+  background: #252d3d;
+}
+
+[data-theme="dark"] .review-item-name {
+  color: var(--text);
+}
+
+[data-theme="dark"] .review-item-meta {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .review-item-price {
+  color: #0ea5e9;
+}
+
+[data-theme="dark"] .checkout-summary {
+  background: var(--card);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .summary-heading {
+  color: var(--text);
+  border-bottom-color: var(--card-border);
+}
+
+[data-theme="dark"] .summary-item-info p {
+  color: var(--text);
+}
+
+[data-theme="dark"] .summary-item-price {
+  color: var(--text);
+}
+
+[data-theme="dark"] .summary-totals {
+  border-top-color: var(--card-border);
+}
+
+[data-theme="dark"] .summary-row {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .summary-total-row {
+  color: var(--text);
+  border-top-color: var(--card-border);
+}
+
+[data-theme="dark"] .seller-payment-info {
+  background: #052e16;
+  border-color: #14532d;
+}
+
+[data-theme="dark"] .seller-payment-card {
+  border-bottom-color: #14532d;
+}
+
+[data-theme="dark"] .seller-payment-seller {
+  color: var(--text);
+}

@@ -785,3 +785,144 @@
 
 .seller-confirm-pay-btn:hover { background: #047857; }
 .seller-confirm-pay-btn:disabled { background: #6ee7b7; cursor: not-allowed; }
+
+/* ── Dark Mode ── */
+[data-theme="dark"] .seller-main {
+  background: var(--bg);
+}
+
+[data-theme="dark"] .seller-page-title {
+  color: var(--text);
+}
+
+[data-theme="dark"] .seller-count {
+  background: var(--card);
+  border-color: var(--card-border);
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .seller-card {
+  background: var(--card);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .seller-section-title {
+  color: var(--text);
+}
+
+[data-theme="dark"] .seller-empty {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .img-upload-zone {
+  border-color: var(--border);
+}
+
+[data-theme="dark"] .img-upload-zone:hover,
+[data-theme="dark"] .img-upload-zone.dragging {
+  border-color: #0ea5e9;
+  background: #0c2340;
+}
+
+[data-theme="dark"] .img-upload-zone.has-image {
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .img-upload-placeholder p {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .img-upload-preview img {
+  background: #252d3d;
+}
+
+[data-theme="dark"] .cat-pill {
+  background: #252d3d;
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .notif-item {
+  border-bottom-color: var(--card-border);
+}
+
+[data-theme="dark"] .notif-item.unread {
+  background: #1a1f2e;
+}
+
+[data-theme="dark"] .notif-icon {
+  background: #0c2340;
+}
+
+[data-theme="dark"] .notif-title {
+  color: var(--text);
+}
+
+[data-theme="dark"] .notif-text {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .seller-order-card {
+  background: var(--card);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .seller-order-header:hover {
+  background: #252d3d;
+}
+
+[data-theme="dark"] .seller-order-id {
+  color: var(--text);
+}
+
+[data-theme="dark"] .seller-order-details {
+  border-top-color: var(--card-border);
+}
+
+[data-theme="dark"] .seller-order-detail-section h4 {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .seller-order-item-row {
+  border-bottom-color: var(--card-border);
+}
+
+[data-theme="dark"] .seller-order-item-row img {
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .seller-order-item-row p {
+  color: var(--text);
+}
+
+[data-theme="dark"] .seller-order-actions {
+  border-top-color: var(--card-border);
+}
+
+[data-theme="dark"] .seller-blocked-btn {
+  background: var(--input-bg);
+  border-color: var(--border);
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .seller-cancel-btn {
+  background: var(--card);
+}
+
+[data-theme="dark"] .stepper-circle {
+  background: var(--card);
+  border-color: var(--border);
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .stepper-line {
+  background: var(--border);
+}
+
+[data-theme="dark"] .payment-account-section {
+  background: var(--input-bg);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .payment-account-label {
+  color: var(--text);
+}

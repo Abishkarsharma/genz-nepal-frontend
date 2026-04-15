@@ -586,3 +586,128 @@ label {
   background: #0f1117 !important;
   border-top-color: #2d3748 !important;
 }
+
+/* ── Additional global dark mode overrides ── */
+
+/* Tables */
+[data-theme="dark"] table th {
+  background: #1a1f2e;
+  color: var(--text-muted);
+  border-bottom-color: var(--border);
+}
+
+[data-theme="dark"] table td {
+  border-bottom-color: var(--border);
+  color: var(--text);
+}
+
+[data-theme="dark"] table tr:hover td {
+  background: #252d3d;
+}
+
+/* Badges */
+[data-theme="dark"] .badge {
+  background: var(--orange);
+  color: white;
+}
+
+/* Qty controls (global) */
+[data-theme="dark"] .qty-control {
+  border-color: var(--border);
+}
+
+/* Select elements */
+[data-theme="dark"] select option {
+  background: var(--input-bg);
+  color: var(--text);
+}
+
+/* Scrollbar */
+[data-theme="dark"] ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: #2d3748;
+  border-radius: 3px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: #374151;
+}
+
+/* Page wrappers with #f5f5f5 background */
+[data-theme="dark"] .home,
+[data-theme="dark"] .cart-page-wrap,
+[data-theme="dark"] .orders-wrap,
+[data-theme="dark"] .checkout-wrap,
+[data-theme="dark"] .success-wrap,
+[data-theme="dark"] .sr-wrap {
+  background: var(--bg);
+}
+
+/* White cards / surfaces */
+[data-theme="dark"] .admin-card,
+[data-theme="dark"] .stat-card {
+  background: var(--card);
+  border-color: var(--card-border);
+}
+
+/* Stepper circles (shared between orders/seller) */
+[data-theme="dark"] .stepper-circle,
+[data-theme="dark"] .tracker-circle {
+  background: var(--card);
+  border-color: var(--border);
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .stepper-line,
+[data-theme="dark"] .tracker-line {
+  background: var(--border);
+}
+
+/* Image upload zones */
+[data-theme="dark"] .img-upload-zone {
+  border-color: var(--border);
+}
+
+[data-theme="dark"] .img-upload-zone:hover {
+  border-color: #0ea5e9;
+  background: #0c2340;
+}
+
+/* Spec table */
+[data-theme="dark"] .spec-key {
+  background: #252d3d;
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .spec-val {
+  color: var(--text);
+}
+
+/* Delivery estimate box */
+[data-theme="dark"] .delivery-estimate {
+  background: #0c2340;
+  border-color: #1e3a5f;
+  color: var(--text-muted);
+}
+
+/* Address block */
+[data-theme="dark"] .address-block {
+  background: var(--input-bg);
+  border-color: var(--card-border);
+}
+
+/* Order count pill */
+[data-theme="dark"] .orders-count,
+[data-theme="dark"] .seller-count {
+  background: var(--card);
+  border-color: var(--card-border);
+  color: var(--text-muted);
+}

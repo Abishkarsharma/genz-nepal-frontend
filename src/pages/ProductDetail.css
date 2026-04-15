@@ -401,3 +401,81 @@
     font-size: 0.82rem;
   }
 }
+
+/* ── Dark Mode ── */
+[data-theme="dark"] .detail-img-wrap {
+  background: #252d3d;
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .detail-name {
+  color: var(--text);
+}
+
+[data-theme="dark"] .rating-count,
+[data-theme="dark"] .detail-sold {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .detail-sold {
+  border-left-color: var(--card-border);
+}
+
+[data-theme="dark"] .delivery-estimate {
+  background: #0c2340;
+  border-color: #1e3a5f;
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .detail-buy-btn {
+  background: var(--card);
+  color: #0ea5e9;
+  border-color: #0ea5e9;
+}
+
+[data-theme="dark"] .detail-buy-btn:hover:not(:disabled) {
+  background: #0ea5e9;
+  color: white;
+}
+
+[data-theme="dark"] .detail-trust {
+  border-top-color: var(--card-border);
+}
+
+[data-theme="dark"] .trust-item {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .detail-tabs {
+  border-bottom-color: var(--card-border);
+}
+
+[data-theme="dark"] .detail-tab {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .detail-tab.active {
+  color: #0ea5e9;
+  border-bottom-color: #0ea5e9;
+}
+
+[data-theme="dark"] .detail-desc {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .specs-table td {
+  border-bottom-color: var(--card-border);
+}
+
+[data-theme="dark"] .spec-key {
+  background: #252d3d;
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .spec-val {
+  color: var(--text);
+}
+
+[data-theme="dark"] .back-btn {
+  color: var(--text-muted);
+}

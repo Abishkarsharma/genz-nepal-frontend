@@ -57,3 +57,35 @@
 @media (max-width: 768px) {
   .about-grid { grid-template-columns: 1fr; gap: 2rem; }
 }
+
+/* ── Dark Mode ── */
+/* AboutUs.css already uses CSS variables for most elements.
+   These overrides handle any remaining hardcoded values. */
+[data-theme="dark"] .about-section {
+  background: var(--bg);
+}
+
+[data-theme="dark"] .about-values {
+  background: var(--card);
+}
+
+[data-theme="dark"] .value-card {
+  background: var(--input-bg);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .value-card h3 {
+  color: var(--text);
+}
+
+[data-theme="dark"] .value-card p {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .about-cta {
+  background: var(--bg);
+}
+
+[data-theme="dark"] .about-cta h2 {
+  color: var(--text);
+}

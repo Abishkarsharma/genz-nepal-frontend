@@ -734,3 +734,172 @@
     margin: 0 0.75rem 0.6rem;
   }
 }
+
+/* ── Dark Mode ── */
+[data-theme="dark"] .orders-wrap {
+  background: var(--bg);
+}
+
+[data-theme="dark"] .orders-title {
+  color: var(--text);
+}
+
+[data-theme="dark"] .orders-count {
+  background: var(--card);
+  border-color: var(--card-border);
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .order-card {
+  background: var(--card);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .order-card-top:hover {
+  background: #252d3d;
+}
+
+[data-theme="dark"] .order-id {
+  color: var(--text);
+}
+
+[data-theme="dark"] .order-date {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .order-thumb {
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .order-more-items {
+  background: var(--input-bg);
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .tracker-circle {
+  background: var(--card);
+  border-color: var(--border);
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .tracker-line {
+  background: var(--border);
+}
+
+[data-theme="dark"] .order-details {
+  border-top-color: var(--card-border);
+}
+
+[data-theme="dark"] .order-detail-section h4 {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .order-detail-item {
+  border-bottom-color: var(--card-border);
+}
+
+[data-theme="dark"] .order-detail-item img {
+  background: #252d3d;
+}
+
+[data-theme="dark"] .order-detail-item-name {
+  color: var(--text);
+}
+
+[data-theme="dark"] .order-detail-item-meta {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .address-block {
+  background: var(--input-bg);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .addr-name {
+  color: var(--text);
+}
+
+[data-theme="dark"] .addr-line {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .order-payment-row {
+  color: var(--text);
+}
+
+[data-theme="dark"] .order-totals {
+  border-top-color: var(--card-border);
+}
+
+[data-theme="dark"] .order-total-row {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .order-total-row.grand {
+  color: var(--text);
+  border-top-color: var(--card-border);
+}
+
+[data-theme="dark"] .cancel-order-btn {
+  background: var(--card);
+}
+
+[data-theme="dark"] .cancel-modal {
+  background: var(--card);
+}
+
+[data-theme="dark"] .cancel-modal-header {
+  border-bottom-color: var(--card-border);
+}
+
+[data-theme="dark"] .cancel-modal-header h3 {
+  color: var(--text);
+}
+
+[data-theme="dark"] .cancel-order-id {
+  color: var(--text);
+}
+
+[data-theme="dark"] .cancel-order-items {
+  border-bottom-color: var(--card-border);
+}
+
+[data-theme="dark"] .cancel-item-row img {
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .cancel-item-row span {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .cancel-field label {
+  color: var(--text);
+}
+
+[data-theme="dark"] .cancel-field textarea {
+  background: var(--input-bg);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+[data-theme="dark"] .cancel-reason-option {
+  border-color: var(--border);
+  color: var(--text);
+}
+
+[data-theme="dark"] .cancel-reason-option:hover {
+  background: #2d1515;
+  border-color: #ef4444;
+}
+
+[data-theme="dark"] .cancel-reason-option.selected {
+  background: #2d1515;
+  border-color: #ef4444;
+  color: #f87171;
+}
+
+[data-theme="dark"] .cancel-modal-back {
+  background: var(--input-bg);
+  border-color: var(--border);
+  color: var(--text-muted);
+}

@@ -60,3 +60,32 @@
 @media (max-width: 768px) {
   .contact-layout { grid-template-columns: 1fr; }
 }
+
+/* ── Dark Mode ── */
+/* Contact.css already uses CSS variables for most elements.
+   These overrides handle any remaining hardcoded values. */
+[data-theme="dark"] .contact-layout {
+  background: var(--bg);
+}
+
+[data-theme="dark"] .contact-form-wrap {
+  background: var(--card);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .contact-form h2 {
+  color: var(--text);
+}
+
+[data-theme="dark"] .contact-card {
+  background: var(--card);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .contact-card h4 {
+  color: var(--text);
+}
+
+[data-theme="dark"] .contact-success h3 {
+  color: var(--text);
+}

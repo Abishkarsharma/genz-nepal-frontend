@@ -278,3 +278,89 @@
   margin-top: 0.35rem;
 }
 
+
+/* ── Dark Mode ── */
+[data-theme="dark"] .review-section {
+  border-top-color: var(--card-border);
+}
+
+[data-theme="dark"] .review-heading {
+  color: var(--text);
+}
+
+[data-theme="dark"] .review-summary-block {
+  background: var(--input-bg);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .review-avg-num {
+  color: var(--text);
+}
+
+[data-theme="dark"] .review-total-count {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .rating-bar-label {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .rating-bar-track {
+  background: var(--border);
+}
+
+[data-theme="dark"] .rating-bar-count {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .write-review-block {
+  background: var(--card);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .write-review-title {
+  color: var(--text);
+}
+
+[data-theme="dark"] .review-form-label {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .review-textarea {
+  background: var(--input-bg);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+[data-theme="dark"] .review-textarea:focus {
+  background: var(--input-bg);
+  border-color: #0ea5e9;
+}
+
+[data-theme="dark"] .review-login-note {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .review-card {
+  border-bottom-color: var(--card-border);
+}
+
+[data-theme="dark"] .reviewer-name {
+  color: var(--text);
+}
+
+[data-theme="dark"] .review-date {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .review-comment {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .no-reviews {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .star-btn.star-off {
+  color: #374151;
+}
