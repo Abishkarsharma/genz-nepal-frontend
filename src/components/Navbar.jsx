@@ -13,6 +13,7 @@ export default function Navbar() {
   const { dark, toggle: toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false); // mobile search bar toggle
   const [notifOpen, setNotifOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [unread, setUnread] = useState(0);
@@ -146,9 +147,25 @@ export default function Navbar() {
             </div>
           </Link>
 
+          {/* Desktop search bar */}
           <SearchBar />
 
-          {/* Theme toggle — dark/light mode */}
+          {/* Mobile search icon — only visible on mobile, toggles search bar */}
+          <button
+            className="mobile-search-icon-btn"
+            onClick={() => { setSearchOpen((v) => !v); setMenuOpen(false); }}
+            aria-label="Search"
+          >
+            {searchOpen ? (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            ) : (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+            )}
+          </button>
           <button
             className="theme-toggle-btn"
             onClick={toggleTheme}
@@ -254,12 +271,18 @@ export default function Navbar() {
         </div>
       </nav>
 
+      {/* Mobile search bar — slides down when search icon tapped */}
+      {searchOpen && (
+        <div className="mobile-search-bar">
+          <div className="container">
+            <SearchBar autoFocus onSearch={() => setSearchOpen(false)} />
+          </div>
+        </div>
+      )}
+
       {/* Mobile menu */}
       {menuOpen && (
         <div className="mobile-menu">
-          <div className="mobile-search-row">
-            <SearchBar />
-          </div>
           <Link to="/" onClick={() => setMenuOpen(false)}>Home</Link>
           {user ? (
             <>

@@ -3,11 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import api from '../api';
 import './SearchBar.css';
 
-export default function SearchBar() {
+export default function SearchBar({ autoFocus = false, onSearch }) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
+  const inputRef = useRef(null);
+
+  // Auto-focus when shown on mobile
+  useEffect(() => {
+    if (autoFocus && inputRef.current) {
+      setTimeout(() => inputRef.current?.focus(), 100);
+    }
+  }, [autoFocus]);
 
   // Image search state
   const [imgPanelOpen, setImgPanelOpen] = useState(false);
@@ -53,6 +61,7 @@ export default function SearchBar() {
     setQuery('');
     setShow(false);
     navigate(`/product/${id}`);
+    if (onSearch) onSearch();
   };
 
   const handleSubmit = (e) => {
@@ -61,6 +70,7 @@ export default function SearchBar() {
       setShow(false);
       setQuery('');
       navigate(`/search?q=${encodeURIComponent(query.trim())}`);
+      if (onSearch) onSearch();
     }
   };
 
@@ -131,6 +141,7 @@ export default function SearchBar() {
     <div className="searchbar-wrap" ref={wrapRef}>
       <form className="searchbar-form" onSubmit={handleSubmit}>
         <input
+          ref={inputRef}
           className="searchbar-input"
           placeholder="Search in Gen.Z Nepal..."
           value={query}
