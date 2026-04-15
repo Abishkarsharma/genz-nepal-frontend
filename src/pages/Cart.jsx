@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-import { SHIPPING } from '../constants';
+import { getShipping } from '../constants';
 import './Cart.css';
 
 export default function Cart() {
@@ -27,7 +27,7 @@ export default function Cart() {
 
   const allChecked = cart.length > 0 && cart.every((i) => checkedItems[i._id]);
   const checkedCount = Object.values(checkedItems).filter(Boolean).length;
-  const shipping = cart.length > 0 ? SHIPPING : 0;
+  const shipping = cart.length > 0 ? getShipping('Kathmandu') : 0; // default to Kathmandu rate in cart
 
   // Only calculate totals for checked items
   const checkedCart = cart.filter((i) => checkedItems[i._id]);

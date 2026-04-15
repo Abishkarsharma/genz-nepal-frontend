@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import { SHIPPING } from '../constants';
+import { SHIPPING, getShipping } from '../constants';
 import './Checkout.css';
 
 const NEPAL_CITIES = [
@@ -13,10 +13,10 @@ const NEPAL_CITIES = [
 ];
 
 const PAYMENT_METHODS = [
-  { id: 'Cash on Delivery', label: 'Cash on Delivery', desc: 'Pay in cash when your order arrives.', icon: '💵' },
-  { id: 'eSewa', label: 'eSewa', desc: 'Pay via eSewa digital wallet.', icon: '💚' },
-  { id: 'Khalti', label: 'Khalti', desc: 'Pay via Khalti digital wallet.', icon: '💜' },
-  { id: 'Bank Transfer', label: 'Bank Transfer', desc: 'Direct bank transfer.', icon: '🏦' },
+  { id: 'Cash on Delivery', label: 'Cash on Delivery', desc: 'Pay in cash when your order arrives.', icon: 'ðŸ’µ' },
+  { id: 'eSewa', label: 'eSewa', desc: 'Pay via eSewa digital wallet.', icon: 'ðŸ’š' },
+  { id: 'Khalti', label: 'Khalti', desc: 'Pay via Khalti digital wallet.', icon: 'ðŸ’œ' },
+  { id: 'Bank Transfer', label: 'Bank Transfer', desc: 'Direct bank transfer.', icon: 'ðŸ¦' },
 ];
 
 // Load Khalti SDK dynamically
@@ -52,8 +52,8 @@ export default function Checkout() {
   const [payment, setPayment] = useState('Cash on Delivery');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const total = subtotal + SHIPPING;
-  const [pendingOrderId, setPendingOrderId] = useState(null);
+  const shipping = getShipping(form.city);
+  const total = subtotal + shipping;
 
   const set = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
   const validateAddress = () => {
@@ -86,7 +86,7 @@ export default function Checkout() {
       }));
       const { data: order } = await api.post('/api/orders', {
         items, shippingAddress: form, paymentMethod: payment,
-        paymentStatus, paymentRef, subtotal, shipping: SHIPPING,
+        paymentStatus, paymentRef, subtotal, shipping: shipping,
       }, { headers: { Authorization: `Bearer ${token}` } });
 
       clearCart();
@@ -102,7 +102,7 @@ export default function Checkout() {
     }
   };
 
-  // eSewa — backend generates proper HMAC signature
+  // eSewa â€” backend generates proper HMAC signature
   const handleEsewa = async () => {
     setLoading(true);
     setError('');
@@ -113,7 +113,7 @@ export default function Checkout() {
 
       // Backend creates order + generates signed form data
       const { data } = await api.post('/api/esewa/initiate', {
-        items, shippingAddress: form, subtotal, shipping: SHIPPING,
+        items, shippingAddress: form, subtotal, shipping: shipping,
       }, { headers: { Authorization: `Bearer ${token}` } });
 
       // Submit form to eSewa
@@ -138,7 +138,7 @@ export default function Checkout() {
     }
   };
 
-  // Khalti — JS widget
+  // Khalti â€” JS widget
   const handleKhalti = async () => {
     const loaded = await loadKhaltiScript();
     if (!loaded) { setError('Failed to load Khalti. Please try again.'); return; }
@@ -152,7 +152,7 @@ export default function Checkout() {
       }));
       const { data: order } = await api.post('/api/orders', {
         items, shippingAddress: form, paymentMethod: 'Khalti',
-        paymentStatus: 'pending', paymentRef: '', subtotal, shipping: SHIPPING,
+        paymentStatus: 'pending', paymentRef: '', subtotal, shipping: shipping,
       }, { headers: { Authorization: `Bearer ${token}` } });
 
       setLoading(false);
@@ -219,7 +219,7 @@ export default function Checkout() {
           <div className="progress-steps">
             {STEPS.map((s, i) => (
               <div key={s} className={`progress-step ${i + 1 <= step ? 'done' : ''} ${i + 1 === step ? 'current' : ''}`}>
-                <div className="progress-dot">{i + 1 < step ? '✓' : i + 1}</div>
+                <div className="progress-dot">{i + 1 < step ? 'âœ“' : i + 1}</div>
                 <span>{s}</span>
               </div>
             ))}
@@ -319,7 +319,7 @@ export default function Checkout() {
                 </div>
 
                 <button type="submit" className="checkout-next-btn">
-                  Continue to Payment →
+                  Continue to Payment â†’
                 </button>
               </form>
             )}
@@ -343,13 +343,13 @@ export default function Checkout() {
                         <p className="payment-name">{m.label}</p>
                         <p className="payment-desc">{m.desc}</p>
                       </div>
-                      {payment === m.id && <span className="payment-check">✓</span>}
+                      {payment === m.id && <span className="payment-check">âœ“</span>}
                     </label>
                   ))}
                 </div>
                 <div className="step-nav">
-                  <button type="button" className="checkout-back-btn" onClick={() => setStep(1)}>← Back</button>
-                  <button type="submit" className="checkout-next-btn">Review Order →</button>
+                  <button type="button" className="checkout-back-btn" onClick={() => setStep(1)}>â† Back</button>
+                  <button type="submit" className="checkout-next-btn">Review Order â†’</button>
                 </div>
               </form>
             )}
@@ -366,13 +366,13 @@ export default function Checkout() {
                     <button className="edit-link" onClick={() => setStep(1)}>Edit</button>
                   </div>
                   <p className="review-name">{form.fullName}</p>
-                  <p className="review-detail">{form.phone}{form.email ? ` · ${form.email}` : ''}</p>
+                  <p className="review-detail">{form.phone}{form.email ? ` Â· ${form.email}` : ''}</p>
                   <p className="review-detail">
                     {[form.street, form.area, form.landmark].filter(Boolean).join(', ')}
                   </p>
                   <p className="review-detail">
                     {[form.city, form.district, form.province].filter(Boolean).join(', ')}
-                    {form.postalCode ? ` — ${form.postalCode}` : ''}
+                    {form.postalCode ? ` â€” ${form.postalCode}` : ''}
                   </p>
                 </div>
 
@@ -403,7 +403,7 @@ export default function Checkout() {
                 </div>
 
                 <div className="step-nav">
-                  <button type="button" className="checkout-back-btn" onClick={() => setStep(2)}>← Back</button>
+                  <button type="button" className="checkout-back-btn" onClick={() => setStep(2)}>â† Back</button>
                   <button
                     className="checkout-place-btn"
                     onClick={handlePlaceOrder}
@@ -440,8 +440,8 @@ export default function Checkout() {
                 <span>NPR {subtotal.toLocaleString()}</span>
               </div>
               <div className="summary-row">
-                <span>Shipping</span>
-                <span>NPR {SHIPPING.toLocaleString()}</span>
+                <span>Shipping {form.city ? `(${form.city})` : ''}</span>
+                <span>NPR {shipping.toLocaleString()}</span>
               </div>
               <div className="summary-total-row">
                 <span>Total</span>
@@ -454,3 +454,4 @@ export default function Checkout() {
     </div>
   );
 }
+
