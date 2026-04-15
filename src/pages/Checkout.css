@@ -530,3 +530,50 @@
   }
 }
 
+
+/* ── Seller payment info (shown in checkout for digital payments) ── */
+.seller-payment-info {
+  background: #f0fdf4;
+  border: 1.5px solid #bbf7d0;
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.seller-payment-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #059669;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.6rem;
+}
+
+.seller-payment-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #d1fae5;
+  flex-wrap: wrap;
+}
+
+.seller-payment-card:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.seller-payment-seller {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.seller-payment-detail {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #059669;
+  font-family: monospace;
+  letter-spacing: 0.03em;
+}

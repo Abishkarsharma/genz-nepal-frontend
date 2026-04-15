@@ -117,6 +117,7 @@ export default function Checkout() {
   const [payment, setPayment] = useState('Cash on Delivery');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [sellerPayments, setSellerPayments] = useState({}); // { sellerId: { name, paymentAccounts } }
   const shipping = getShipping(form.city);
   const total = subtotal + shipping;
 
@@ -137,10 +138,32 @@ export default function Checkout() {
       const err = validateAddress();
       if (err) { setError(err); return; }
       setError('');
+      // Fetch seller payment accounts when moving to payment step
+      fetchSellerPayments();
       setStep(2);
     } else if (step === 2) {
       setStep(3);
     }
+  };
+
+  // Fetch payment accounts for all unique sellers in cart
+  const fetchSellerPayments = async () => {
+    try {
+      const productIds = cart.map((i) => i._id).filter(Boolean);
+      if (!productIds.length) return;
+      // Get seller IDs from products
+      const { data: products } = await api.get(`/api/products?ids=${productIds.join(',')}&limit=100`);
+      const productList = Array.isArray(products) ? products : products.products || [];
+      const sellerIds = [...new Set(productList.map((p) => p.createdBy).filter(Boolean))];
+      const results = {};
+      await Promise.all(sellerIds.map(async (sid) => {
+        try {
+          const { data } = await api.get(`/api/users/seller/${sid}/payment`);
+          results[sid] = data;
+        } catch { /* seller may not have payment accounts set */ }
+      }));
+      setSellerPayments(results);
+    } catch { /* non-critical */ }
   };
 
   const placeOrder = async (paymentStatus = 'pending', paymentRef = '') => {
@@ -407,6 +430,26 @@ export default function Checkout() {
                     </button>
                   ))}
                 </div>
+
+                {/* Seller payment details — shown for digital payments */}
+                {payment !== 'Cash on Delivery' && Object.keys(sellerPayments).length > 0 && (
+                  <div className="seller-payment-info">
+                    <p className="seller-payment-title">Send payment directly to seller:</p>
+                    {Object.values(sellerPayments).map((sp, i) => {
+                      const acc = sp.paymentAccounts || {};
+                      const info = payment === 'eSewa' ? acc.esewa
+                        : payment === 'Khalti' ? acc.khalti
+                        : payment === 'Bank Transfer' ? (acc.bankName ? `${acc.bankName} · ${acc.accountName} · ${acc.accountNumber}` : '') : '';
+                      if (!info) return null;
+                      return (
+                        <div key={i} className="seller-payment-card">
+                          <span className="seller-payment-seller">🏪 {sp.name}</span>
+                          <span className="seller-payment-detail">{info}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
                 <div className="step-nav">
                   <button type="button" className="checkout-back-btn" onClick={() => setStep(1)}>&larr; Back</button>
                   <button type="submit" className="checkout-next-btn">Review Order &rarr;</button>

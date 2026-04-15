@@ -50,6 +50,7 @@ export default function SellerDashboard() {
           {[
             { key: 'products', label: 'Products', icon: '📦' },
             { key: 'orders', label: 'Orders', icon: '🛒' },
+            { key: 'payment', label: 'Payment Accounts', icon: '💳' },
             { key: 'notifications', label: 'Notifications', icon: '🔔', badge: unread },
           ].map((item) => (
             <button
@@ -68,6 +69,7 @@ export default function SellerDashboard() {
       <main className="seller-main">
         {tab === 'products' && <SellerProducts token={token} userId={user?.id} />}
         {tab === 'orders' && <SellerOrders token={token} />}
+        {tab === 'payment' && <SellerPaymentAccounts token={token} />}
         {tab === 'notifications' && <SellerNotifications notifications={notifications} />}
       </main>
     </div>
@@ -327,6 +329,126 @@ function SellerOrders({ token }) {
             </table>
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+/* ── Payment Accounts ── */
+function SellerPaymentAccounts({ token }) {
+  const [form, setForm] = useState({ esewa: '', khalti: '', bankName: '', accountName: '', accountNumber: '' });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [success, setSuccess] = useState('');
+  const [error, setError] = useState('');
+  const headers = { headers: { Authorization: `Bearer ${token}` } };
+
+  useEffect(() => {
+    api.get('/api/users/me', headers).then(({ data }) => {
+      if (data.paymentAccounts) setForm({ ...{ esewa: '', khalti: '', bankName: '', accountName: '', accountNumber: '' }, ...data.paymentAccounts });
+    }).finally(() => setLoading(false));
+  }, []);
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    setSaving(true); setError(''); setSuccess('');
+    try {
+      await api.put('/api/users/me/payment-accounts', form, headers);
+      setSuccess('Payment accounts saved successfully!');
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to save');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) return <div className="spinner" />;
+
+  return (
+    <div>
+      <div className="seller-page-header">
+        <h1 className="seller-page-title">Payment Accounts</h1>
+      </div>
+      <div className="seller-card">
+        <p style={{ fontSize: '0.85rem', color: '#666', marginBottom: '1.25rem', lineHeight: 1.6 }}>
+          Add your payment details below. Customers will see these when they choose to pay you directly via eSewa, Khalti, or Bank Transfer.
+        </p>
+
+        {error && <div className="alert alert-error" style={{ marginBottom: '1rem' }}>{error}</div>}
+        {success && <div className="alert alert-success" style={{ marginBottom: '1rem' }}>{success}</div>}
+
+        <form onSubmit={handleSave}>
+          {/* eSewa */}
+          <div className="payment-account-section">
+            <div className="payment-account-header">
+              <span className="payment-account-logo esewa-logo">eSewa</span>
+              <span className="payment-account-label">eSewa Account</span>
+            </div>
+            <div className="form-group">
+              <label>eSewa Registered Phone / ID</label>
+              <input
+                placeholder="e.g. 98XXXXXXXX"
+                value={form.esewa}
+                onChange={(e) => setForm({ ...form, esewa: e.target.value })}
+              />
+            </div>
+          </div>
+
+          {/* Khalti */}
+          <div className="payment-account-section">
+            <div className="payment-account-header">
+              <span className="payment-account-logo khalti-logo">khalti</span>
+              <span className="payment-account-label">Khalti Account</span>
+            </div>
+            <div className="form-group">
+              <label>Khalti Registered Phone / ID</label>
+              <input
+                placeholder="e.g. 98XXXXXXXX"
+                value={form.khalti}
+                onChange={(e) => setForm({ ...form, khalti: e.target.value })}
+              />
+            </div>
+          </div>
+
+          {/* Bank Transfer */}
+          <div className="payment-account-section">
+            <div className="payment-account-header">
+              <span className="payment-account-logo bank-logo">🏦</span>
+              <span className="payment-account-label">Bank Transfer</span>
+            </div>
+            <div className="form-row">
+              <div className="form-group">
+                <label>Bank Name</label>
+                <input
+                  placeholder="e.g. Nabil Bank"
+                  value={form.bankName}
+                  onChange={(e) => setForm({ ...form, bankName: e.target.value })}
+                />
+              </div>
+              <div className="form-group">
+                <label>Account Holder Name</label>
+                <input
+                  placeholder="e.g. Abishkar Sharma"
+                  value={form.accountName}
+                  onChange={(e) => setForm({ ...form, accountName: e.target.value })}
+                />
+              </div>
+            </div>
+            <div className="form-group">
+              <label>Account Number</label>
+              <input
+                placeholder="e.g. 0123456789012"
+                value={form.accountNumber}
+                onChange={(e) => setForm({ ...form, accountNumber: e.target.value })}
+              />
+            </div>
+          </div>
+
+          <button type="submit" className="btn btn-primary" disabled={saving}>
+            {saving ? 'Saving...' : 'Save Payment Accounts'}
+          </button>
+        </form>
       </div>
     </div>
   );
