@@ -735,3 +735,53 @@
   font-size: 0.75rem;
   color: #aaa;
 }
+
+/* ── Confirm Payment Bar ── */
+.seller-confirm-payment-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin: 0 1.1rem 0;
+  padding: 0.65rem 0.9rem;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
+  flex-wrap: wrap;
+}
+
+[data-theme="dark"] .seller-confirm-payment-bar {
+  background: #052e16;
+  border-color: #14532d;
+}
+
+.seller-confirm-payment-info {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: #059669;
+  flex: 1;
+}
+
+[data-theme="dark"] .seller-confirm-payment-info {
+  color: #34d399;
+}
+
+.seller-confirm-pay-btn {
+  padding: 0.45rem 1rem;
+  background: #059669;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.seller-confirm-pay-btn:hover { background: #047857; }
+.seller-confirm-pay-btn:disabled { background: #6ee7b7; cursor: not-allowed; }

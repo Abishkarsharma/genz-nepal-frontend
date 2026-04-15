@@ -291,12 +291,24 @@ function SellerOrders({ token }) {
   };
 
   const updateStatus = async (id, status) => {
-    setUpdating(id);
+    setUpdating(id + status);
     try {
       await api.patch(`/api/orders/seller/${id}/status`, { status }, headers);
       setOrders((prev) => prev.map((o) => o._id === id ? { ...o, status } : o));
     } catch (err) {
       alert(err.response?.data?.message || 'Failed to update status');
+    } finally {
+      setUpdating(null);
+    }
+  };
+
+  const confirmPayment = async (id) => {
+    setUpdating(id + 'pay');
+    try {
+      await api.patch(`/api/orders/seller/${id}/confirm-payment`, {}, headers);
+      setOrders((prev) => prev.map((o) => o._id === id ? { ...o, paymentStatus: 'paid' } : o));
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to confirm payment');
     } finally {
       setUpdating(null);
     }
@@ -358,6 +370,25 @@ function SellerOrders({ token }) {
                   </div>
                 )}
 
+                {/* COD / Bank Transfer — seller can manually confirm payment */}
+                {!isPaid && !isCancelled && (isCOD || o.paymentMethod === 'Bank Transfer') && (
+                  <div className="seller-confirm-payment-bar">
+                    <div className="seller-confirm-payment-info">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                      {isCOD
+                        ? 'Confirm when customer pays cash on delivery'
+                        : 'Confirm when you receive the bank transfer'}
+                    </div>
+                    <button
+                      className="seller-confirm-pay-btn"
+                      onClick={() => confirmPayment(o._id)}
+                      disabled={updating === o._id + 'pay'}
+                    >
+                      {updating === o._id + 'pay' ? 'Confirming...' : '✓ Mark as Paid'}
+                    </button>
+                  </div>
+                )}
+
                 {/* Status flow stepper */}
                 {!isCancelled && (
                   <div className="seller-status-stepper">
@@ -397,9 +428,17 @@ function SellerOrders({ token }) {
                         <button
                           className="seller-advance-btn"
                           onClick={() => updateStatus(o._id, next)}
-                          disabled={updating === o._id}
+                          disabled={updating === o._id + next}
                         >
-                          {updating === o._id ? 'Updating...' : `Mark as ${next.charAt(0).toUpperCase() + next.slice(1)} →`}
+                          {updating === o._id + next ? 'Updating...' : (
+                            next === 'delivered'
+                              ? '✓ Mark as Delivered'
+                              : next === 'shipped'
+                              ? '🚚 Mark as Shipped'
+                              : next === 'processing'
+                              ? '⚙️ Start Processing'
+                              : `Mark as ${next.charAt(0).toUpperCase() + next.slice(1)} →`
+                          )}
                         </button>
                       ) : (
                         <div className="seller-blocked-btn">
@@ -411,7 +450,7 @@ function SellerOrders({ token }) {
                     <button
                       className="seller-cancel-btn"
                       onClick={() => updateStatus(o._id, 'cancelled')}
-                      disabled={updating === o._id}
+                      disabled={updating === o._id + 'cancelled'}
                     >
                       Cancel Order
                     </button>
