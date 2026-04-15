@@ -100,3 +100,40 @@
   padding: 0.75rem;
 }
 
+
+.password-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-wrap input {
+  padding-right: 2.5rem;
+}
+
+.password-eye {
+  position: absolute;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #aaa;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.15s;
+}
+
+.password-eye:hover {
+  color: #555;
+}
+
+.field-hint {
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.field-hint.error {
+  color: #ef4444;
+}
