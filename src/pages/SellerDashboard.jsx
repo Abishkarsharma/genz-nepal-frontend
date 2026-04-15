@@ -6,7 +6,6 @@ import './AdminDashboard.css';
 import './SellerDashboard.css';
 
 const CATEGORIES = ['Accessories', 'Home', 'Electronics', 'Stationery', 'Wellness'];
-const STATUS_OPTIONS = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
 
 export default function SellerDashboard() {
   const { token, user } = useAuth();
@@ -264,6 +263,8 @@ function SellerProducts({ token, userId }) {
 function SellerOrders({ token }) {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(null);
+  const [expanded, setExpanded] = useState(null);
   const headers = { headers: { Authorization: `Bearer ${token}` } };
 
   const load = () => {
@@ -274,9 +275,31 @@ function SellerOrders({ token }) {
 
   useEffect(() => { load(); }, []);
 
+  const STATUS_FLOW = ['pending', 'processing', 'shipped', 'delivered'];
+
+  const canAdvance = (order) => {
+    // COD: seller can always advance (payment on delivery)
+    if (order.paymentMethod === 'Cash on Delivery') return true;
+    // Digital payment: must be paid before processing
+    return order.paymentStatus === 'paid';
+  };
+
+  const nextStatus = (current) => {
+    const idx = STATUS_FLOW.indexOf(current);
+    if (idx === -1 || idx >= STATUS_FLOW.length - 1) return null;
+    return STATUS_FLOW[idx + 1];
+  };
+
   const updateStatus = async (id, status) => {
-    await api.patch(`/api/orders/seller/${id}/status`, { status }, headers);
-    load();
+    setUpdating(id);
+    try {
+      await api.patch(`/api/orders/seller/${id}/status`, { status }, headers);
+      setOrders((prev) => prev.map((o) => o._id === id ? { ...o, status } : o));
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to update status');
+    } finally {
+      setUpdating(null);
+    }
   };
 
   if (loading) return <div className="spinner" />;
@@ -287,49 +310,157 @@ function SellerOrders({ token }) {
         <h1 className="seller-page-title">My Orders</h1>
         <span className="seller-count">{orders.length} order{orders.length !== 1 ? 's' : ''}</span>
       </div>
-      <div className="seller-card">
-        {orders.length === 0 ? (
+
+      {orders.length === 0 ? (
+        <div className="seller-card">
           <p className="seller-empty">No orders yet. Share your products to get started!</p>
-        ) : (
-          <div className="table-wrap">
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {orders.map((o) => (
-                  <tr key={o._id}>
-                    <td className="mono">#{o._id.slice(-8).toUpperCase()}</td>
-                    <td>
-                      <p style={{ fontWeight: 500 }}>{o.user?.name || 'N/A'}</p>
-                      <p className="text-muted">{o.user?.email}</p>
-                    </td>
-                    <td>
+        </div>
+      ) : (
+        <div className="seller-orders-list">
+          {orders.map((o) => {
+            const isPaid = o.paymentStatus === 'paid';
+            const isCOD = o.paymentMethod === 'Cash on Delivery';
+            const paymentOk = isPaid || isCOD;
+            const next = nextStatus(o.status);
+            const isCancelled = o.status === 'cancelled';
+            const isDelivered = o.status === 'delivered';
+            const isOpen = expanded === o._id;
+
+            return (
+              <div key={o._id} className="seller-order-card">
+                {/* Header */}
+                <div className="seller-order-header" onClick={() => setExpanded(isOpen ? null : o._id)}>
+                  <div className="seller-order-id-wrap">
+                    <span className="seller-order-id">#{o._id.slice(-8).toUpperCase()}</span>
+                    <span className="seller-order-date">{new Date(o.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                  </div>
+                  <div className="seller-order-badges">
+                    {/* Payment status badge */}
+                    <span className={`seller-pay-badge ${isPaid ? 'paid' : isCOD ? 'cod' : 'unpaid'}`}>
+                      {isPaid ? '✓ Paid' : isCOD ? '💵 COD' : '⏳ Awaiting Payment'}
+                    </span>
+                    {/* Order status badge */}
+                    <span className={`seller-status-badge s-${o.status}`}>
+                      {o.status.charAt(0).toUpperCase() + o.status.slice(1)}
+                    </span>
+                    <span className="seller-order-total">NPR {o.total?.toLocaleString()}</span>
+                    <svg className={`expand-icon ${isOpen ? 'open' : ''}`} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#aaa" strokeWidth="2">
+                      <polyline points="6 9 12 15 18 9"/>
+                    </svg>
+                  </div>
+                </div>
+
+                {/* Payment warning for digital unpaid */}
+                {!paymentOk && !isCancelled && (
+                  <div className="seller-payment-warning">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    Customer has not paid yet via <strong>{o.paymentMethod}</strong>. You cannot process this order until payment is confirmed.
+                  </div>
+                )}
+
+                {/* Status flow stepper */}
+                {!isCancelled && (
+                  <div className="seller-status-stepper">
+                    {STATUS_FLOW.map((s, i) => {
+                      const currentIdx = STATUS_FLOW.indexOf(o.status);
+                      const isDone = i < currentIdx;
+                      const isActive = i === currentIdx;
+                      return (
+                        <React.Fragment key={s}>
+                          <div className={`stepper-node ${isDone ? 'done' : ''} ${isActive ? 'active' : ''}`}>
+                            <div className="stepper-circle">
+                              {isDone ? '✓' : i + 1}
+                            </div>
+                            <span className="stepper-label">{s.charAt(0).toUpperCase() + s.slice(1)}</span>
+                          </div>
+                          {i < STATUS_FLOW.length - 1 && (
+                            <div className={`stepper-line ${isDone ? 'filled' : ''}`} />
+                          )}
+                        </React.Fragment>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {isCancelled && (
+                  <div className="seller-cancelled-bar">
+                    <span>✕</span> Order Cancelled
+                    {o.cancelReason && <span className="seller-cancel-reason"> — {o.cancelReason}</span>}
+                  </div>
+                )}
+
+                {/* Action buttons */}
+                {!isCancelled && !isDelivered && (
+                  <div className="seller-order-actions">
+                    {next && (
+                      paymentOk ? (
+                        <button
+                          className="seller-advance-btn"
+                          onClick={() => updateStatus(o._id, next)}
+                          disabled={updating === o._id}
+                        >
+                          {updating === o._id ? 'Updating...' : `Mark as ${next.charAt(0).toUpperCase() + next.slice(1)} →`}
+                        </button>
+                      ) : (
+                        <div className="seller-blocked-btn">
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                          Waiting for payment to advance
+                        </div>
+                      )
+                    )}
+                    <button
+                      className="seller-cancel-btn"
+                      onClick={() => updateStatus(o._id, 'cancelled')}
+                      disabled={updating === o._id}
+                    >
+                      Cancel Order
+                    </button>
+                  </div>
+                )}
+
+                {isDelivered && (
+                  <div className="seller-delivered-bar">
+                    <span>✓</span> Order Delivered Successfully
+                  </div>
+                )}
+
+                {/* Expanded details */}
+                {isOpen && (
+                  <div className="seller-order-details">
+                    <div className="seller-order-detail-section">
+                      <h4>Customer</h4>
+                      <p style={{ fontWeight: 600, fontSize: '0.88rem' }}>{o.user?.name || 'N/A'}</p>
+                      <p style={{ color: '#888', fontSize: '0.8rem' }}>{o.user?.email}</p>
+                    </div>
+                    <div className="seller-order-detail-section">
+                      <h4>Items</h4>
                       {o.items.map((item, i) => (
-                        <p key={i} style={{ fontSize: '0.8rem', color: '#555' }}>
-                          {item.name} × {item.quantity}
-                        </p>
+                        <div key={i} className="seller-order-item-row">
+                          <img src={item.image} alt={item.name} />
+                          <div>
+                            <p>{item.name}</p>
+                            <p className="text-muted">×{item.quantity} · NPR {item.price?.toLocaleString()}</p>
+                          </div>
+                          <span style={{ fontWeight: 700, color: '#0ea5e9' }}>NPR {(item.price * item.quantity).toLocaleString()}</span>
+                        </div>
                       ))}
-                    </td>
-                    <td style={{ fontWeight: 600 }}>NPR {o.total?.toLocaleString()}</td>                    <td>
-                      <select
-                        className={`status-select status-${o.status}`}
-                        value={o.status}
-                        onChange={(e) => updateStatus(o._id, e.target.value)}
-                      >
-                        {STATUS_OPTIONS.map((s) => <option key={s}>{s}</option>)}
-                      </select>
-                    </td>
-                    <td className="text-muted">{new Date(o.createdAt).toLocaleDateString()}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+                    </div>
+                    {o.shippingAddress && (
+                      <div className="seller-order-detail-section">
+                        <h4>Delivery Address</h4>
+                        <p style={{ fontSize: '0.85rem', color: '#555', lineHeight: 1.6 }}>
+                          {o.shippingAddress.fullName} · {o.shippingAddress.phone}<br />
+                          {[o.shippingAddress.street, o.shippingAddress.area, o.shippingAddress.city].filter(Boolean).join(', ')}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
