@@ -73,6 +73,7 @@ function Products({ token }) {
   const [form, setForm] = useState({ name: '', price: '', category: '', image: '', stock: '', description: '' });
   const [editing, setEditing] = useState(null);
   const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   const load = () => api.get('/api/products?limit=100').then(({ data }) => {
     setProducts(Array.isArray(data) ? data : data.products || []);
@@ -80,13 +81,17 @@ function Products({ token }) {
   useEffect(() => { load(); }, []);
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); setError('');
+    e.preventDefault();
+    if (submitting) return;
+    setError('');
+    setSubmitting(true);
     try {
       if (editing) { await api.put(`/api/products/${editing}`, form, authHeader(token)); }
       else { await api.post('/api/products', form, authHeader(token)); }
       setForm({ name: '', price: '', category: '', image: '', stock: '', description: '' });
       setEditing(null); load();
     } catch (err) { setError(err.response?.data?.message || 'Failed'); }
+    finally { setSubmitting(false); }
   };
 
   const handleEdit = (p) => {
@@ -140,9 +145,11 @@ function Products({ token }) {
             <textarea rows={2} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
           </div>
           <div style={{ display: 'flex', gap: '0.75rem' }}>
-            <button type="submit" className="btn btn-primary btn-sm">{editing ? 'Update Product' : 'Add Product'}</button>
+            <button type="submit" className="btn btn-primary btn-sm" disabled={submitting}>
+              {submitting ? (editing ? 'Updating...' : 'Adding...') : (editing ? 'Update Product' : 'Add Product')}
+            </button>
             {editing && (
-              <button type="button" className="btn btn-outline btn-sm"
+              <button type="button" className="btn btn-outline btn-sm" disabled={submitting}
                 onClick={() => { setEditing(null); setForm({ name: '', price: '', category: '', image: '', stock: '', description: '' }); }}>
                 Cancel
               </button>

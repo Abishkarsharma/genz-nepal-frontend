@@ -80,6 +80,7 @@ function SellerProducts({ token, userId }) {
   const [form, setForm] = useState({ name: '', price: '', category: '', image: '', stock: '', description: '' });
   const [editing, setEditing] = useState(null);
   const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
   const headers = { headers: { Authorization: `Bearer ${token}` } };
 
   const load = () =>
@@ -92,8 +93,10 @@ function SellerProducts({ token, userId }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (submitting) return; // prevent double submit
     setError('');
     if (!form.image) { setError('Please upload a product image'); return; }
+    setSubmitting(true);
     try {
       if (editing) {
         await api.put(`/api/products/${editing}`, form, headers);
@@ -105,6 +108,8 @@ function SellerProducts({ token, userId }) {
       load();
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to save product');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -196,14 +201,15 @@ function SellerProducts({ token, userId }) {
           </div>
 
           <div className="form-actions">
-            <button type="submit" className="btn btn-primary btn-sm">
-              {editing ? 'Update Product' : 'Add Product'}
+            <button type="submit" className="btn btn-primary btn-sm" disabled={submitting}>
+              {submitting ? (editing ? 'Updating...' : 'Adding...') : (editing ? 'Update Product' : 'Add Product')}
             </button>
             {editing && (
               <button
                 type="button"
                 className="btn btn-outline btn-sm"
-                onClick={() => { setEditing(null); setImagePreview(''); setForm({ name: '', price: '', category: '', image: '', stock: '', description: '' }); }}
+                disabled={submitting}
+                onClick={() => { setEditing(null); setForm({ name: '', price: '', category: '', image: '', stock: '', description: '' }); }}
               >
                 Cancel
               </button>
