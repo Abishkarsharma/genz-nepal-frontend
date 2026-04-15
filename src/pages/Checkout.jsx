@@ -1,9 +1,9 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import { SHIPPING, getShipping } from '../constants';
+import { getShipping } from '../constants';
 import './Checkout.css';
 
 const NEPAL_CITIES = [
@@ -12,11 +12,76 @@ const NEPAL_CITIES = [
   'Janakpur', 'Nepalgunj', 'Bharatpur', 'Dhangadhi', 'Tulsipur',
 ];
 
+// Real brand logos using official CDN / reliable image sources
+const PaymentIcons = {
+  'Cash on Delivery': (
+    <svg viewBox="0 0 56 56" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+      <rect x="3" y="13" width="50" height="30" rx="5" fill="#0ea5e9"/>
+      <rect x="3" y="20" width="50" height="8" fill="#0284c7"/>
+      <rect x="8" y="33" width="12" height="4" rx="2" fill="white" opacity="0.85"/>
+      <circle cx="43" cy="35" r="5" fill="#fbbf24"/>
+      <circle cx="38" cy="35" r="5" fill="#f59e0b"/>
+      <text x="40.5" y="37.5" textAnchor="middle" fontSize="5.5" fontWeight="900" fontFamily="Arial,sans-serif" fill="white">$</text>
+    </svg>
+  ),
+  'eSewa': (
+    <img
+      src="https://cdn.esewa.com.np/ui/images/esewa_og.png"
+      alt="eSewa"
+      className="payment-logo-img"
+      onError={(e) => {
+        e.target.style.display = 'none';
+        e.target.nextSibling.style.display = 'block';
+      }}
+    />
+  ),
+  'Khalti': (
+    <img
+      src="https://khalti.com/static/khalti-logo.png"
+      alt="Khalti"
+      className="payment-logo-img"
+      onError={(e) => {
+        e.target.style.display = 'none';
+        e.target.nextSibling.style.display = 'block';
+      }}
+    />
+  ),
+  'Bank Transfer': (
+    <svg viewBox="0 0 56 56" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="2" width="52" height="52" rx="10" fill="#1e40af"/>
+      <polygon points="28,8 48,20 8,20" fill="white" opacity="0.95"/>
+      <rect x="10" y="23" width="6" height="16" rx="1.5" fill="white" opacity="0.9"/>
+      <rect x="20" y="23" width="6" height="16" rx="1.5" fill="white" opacity="0.9"/>
+      <rect x="30" y="23" width="6" height="16" rx="1.5" fill="white" opacity="0.9"/>
+      <rect x="40" y="23" width="6" height="16" rx="1.5" fill="white" opacity="0.9"/>
+      <rect x="8" y="40" width="40" height="4" rx="2" fill="white" opacity="0.9"/>
+    </svg>
+  ),
+};
+
+// Fallback SVG icons shown if real logo images fail to load
+const PaymentIconFallbacks = {
+  'eSewa': (
+    <svg viewBox="0 0 56 56" width="48" height="48" xmlns="http://www.w3.org/2000/svg" style={{ display: 'none' }}>
+      <circle cx="28" cy="28" r="26" fill="#60BB46"/>
+      <text x="28" y="24" textAnchor="middle" fontSize="9" fontWeight="900" fontFamily="Arial,sans-serif" fill="white">eSewa</text>
+      <text x="28" y="36" textAnchor="middle" fontSize="7" fontFamily="Arial,sans-serif" fill="white" opacity="0.9">Mobile Wallet</text>
+    </svg>
+  ),
+  'Khalti': (
+    <svg viewBox="0 0 56 56" width="48" height="48" xmlns="http://www.w3.org/2000/svg" style={{ display: 'none' }}>
+      <rect x="2" y="2" width="52" height="52" rx="10" fill="#5C2D91"/>
+      <text x="28" y="26" textAnchor="middle" fontSize="10" fontWeight="900" fontFamily="Arial,sans-serif" fill="white">khalti</text>
+      <text x="28" y="38" textAnchor="middle" fontSize="6.5" fontFamily="Arial,sans-serif" fill="white" opacity="0.85">by IME Pay</text>
+    </svg>
+  ),
+};
+
 const PAYMENT_METHODS = [
-  { id: 'Cash on Delivery', label: 'Cash on Delivery', desc: 'Pay in cash when your order arrives.', icon: 'ðŸ’µ' },
-  { id: 'eSewa', label: 'eSewa', desc: 'Pay via eSewa digital wallet.', icon: 'ðŸ’š' },
-  { id: 'Khalti', label: 'Khalti', desc: 'Pay via Khalti digital wallet.', icon: 'ðŸ’œ' },
-  { id: 'Bank Transfer', label: 'Bank Transfer', desc: 'Direct bank transfer.', icon: 'ðŸ¦' },
+  { id: 'Cash on Delivery', label: 'Cash on Delivery', desc: 'Cash on Delivery' },
+  { id: 'eSewa',            label: 'eSewa',            desc: 'eSewa Mobile Wallet' },
+  { id: 'Khalti',           label: 'Khalti by IME',    desc: 'Mobile Wallet' },
+  { id: 'Bank Transfer',    label: 'Bank Transfer',    desc: 'Direct Bank Transfer' },
 ];
 
 // Load Khalti SDK dynamically
@@ -56,6 +121,7 @@ export default function Checkout() {
   const total = subtotal + shipping;
 
   const set = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
+
   const validateAddress = () => {
     if (!form.fullName.trim()) return 'Full name is required';
     if (!form.phone.trim()) return 'Phone number is required';
@@ -86,7 +152,7 @@ export default function Checkout() {
       }));
       const { data: order } = await api.post('/api/orders', {
         items, shippingAddress: form, paymentMethod: payment,
-        paymentStatus, paymentRef, subtotal, shipping: shipping,
+        paymentStatus, paymentRef, subtotal, shipping,
       }, { headers: { Authorization: `Bearer ${token}` } });
 
       clearCart();
@@ -102,7 +168,7 @@ export default function Checkout() {
     }
   };
 
-  // eSewa â€” backend generates proper HMAC signature
+  // eSewa – backend generates proper HMAC signature
   const handleEsewa = async () => {
     setLoading(true);
     setError('');
@@ -111,12 +177,10 @@ export default function Checkout() {
         product: i._id, name: i.name, price: i.price, quantity: i.quantity, image: i.image,
       }));
 
-      // Backend creates order + generates signed form data
       const { data } = await api.post('/api/esewa/initiate', {
-        items, shippingAddress: form, subtotal, shipping: shipping,
+        items, shippingAddress: form, subtotal, shipping,
       }, { headers: { Authorization: `Bearer ${token}` } });
 
-      // Submit form to eSewa
       const form_el = document.createElement('form');
       form_el.method = 'POST';
       form_el.action = data.esewaUrl;
@@ -138,12 +202,11 @@ export default function Checkout() {
     }
   };
 
-  // Khalti â€” JS widget
+  // Khalti – JS widget
   const handleKhalti = async () => {
     const loaded = await loadKhaltiScript();
     if (!loaded) { setError('Failed to load Khalti. Please try again.'); return; }
 
-    // Create pending order first
     setLoading(true);
     setError('');
     try {
@@ -152,7 +215,7 @@ export default function Checkout() {
       }));
       const { data: order } = await api.post('/api/orders', {
         items, shippingAddress: form, paymentMethod: 'Khalti',
-        paymentStatus: 'pending', paymentRef: '', subtotal, shipping: shipping,
+        paymentStatus: 'pending', paymentRef: '', subtotal, shipping,
       }, { headers: { Authorization: `Bearer ${token}` } });
 
       setLoading(false);
@@ -167,7 +230,6 @@ export default function Checkout() {
         paymentPreference: ['KHALTI', 'EBANKING', 'MOBILE_BANKING', 'CONNECT_IPS', 'SCT'],
         eventHandler: {
           onSuccess: async (payload) => {
-            // Verify on backend
             try {
               await api.post('/api/orders/verify-khalti', {
                 token: payload.token,
@@ -201,7 +263,6 @@ export default function Checkout() {
   const handlePlaceOrder = async () => {
     if (payment === 'eSewa') return handleEsewa();
     if (payment === 'Khalti') return handleKhalti();
-    // COD and Bank Transfer
     await placeOrder('pending', '');
   };
 
@@ -210,7 +271,7 @@ export default function Checkout() {
 
   return (
     <div className="checkout-wrap">
-    <div className="checkout-container">
+      <div className="checkout-container">
         {/* Progress */}
         <div className="checkout-progress">
           <div className="progress-track">
@@ -219,7 +280,7 @@ export default function Checkout() {
           <div className="progress-steps">
             {STEPS.map((s, i) => (
               <div key={s} className={`progress-step ${i + 1 <= step ? 'done' : ''} ${i + 1 === step ? 'current' : ''}`}>
-                <div className="progress-dot">{i + 1 < step ? 'âœ“' : i + 1}</div>
+                <div className="progress-dot">{i + 1 < step ? '✓' : i + 1}</div>
                 <span>{s}</span>
               </div>
             ))}
@@ -319,7 +380,7 @@ export default function Checkout() {
                 </div>
 
                 <button type="submit" className="checkout-next-btn">
-                  Continue to Payment â†’
+                  Continue to Payment &rarr;
                 </button>
               </form>
             )}
@@ -327,29 +388,28 @@ export default function Checkout() {
             {/* Step 2: Payment */}
             {step === 2 && (
               <form onSubmit={handleNextStep} className="checkout-section">
-                <h2 className="section-title">Payment Method</h2>
+                <h2 className="section-title">Select Payment Method</h2>
                 <div className="payment-grid">
                   {PAYMENT_METHODS.map((m) => (
-                    <label key={m.id} className={`payment-card ${payment === m.id ? 'selected' : ''}`}>
-                      <input
-                        type="radio"
-                        name="payment"
-                        value={m.id}
-                        checked={payment === m.id}
-                        onChange={() => setPayment(m.id)}
-                      />
-                      <span className="payment-icon">{m.icon}</span>
-                      <div>
-                        <p className="payment-name">{m.label}</p>
-                        <p className="payment-desc">{m.desc}</p>
+                    <button
+                      key={m.id}
+                      type="button"
+                      className={`payment-card ${payment === m.id ? 'selected' : ''}`}
+                      onClick={() => setPayment(m.id)}
+                      aria-pressed={payment === m.id}
+                    >
+                      <div className="payment-icon-wrap">
+                        {PaymentIcons[m.id]}
+                        {PaymentIconFallbacks[m.id] || null}
                       </div>
-                      {payment === m.id && <span className="payment-check">âœ“</span>}
-                    </label>
+                      <p className="payment-name">{m.label}</p>
+                      <p className="payment-desc">{m.desc}</p>
+                    </button>
                   ))}
                 </div>
                 <div className="step-nav">
-                  <button type="button" className="checkout-back-btn" onClick={() => setStep(1)}>â† Back</button>
-                  <button type="submit" className="checkout-next-btn">Review Order â†’</button>
+                  <button type="button" className="checkout-back-btn" onClick={() => setStep(1)}>&larr; Back</button>
+                  <button type="submit" className="checkout-next-btn">Review Order &rarr;</button>
                 </div>
               </form>
             )}
@@ -366,13 +426,13 @@ export default function Checkout() {
                     <button className="edit-link" onClick={() => setStep(1)}>Edit</button>
                   </div>
                   <p className="review-name">{form.fullName}</p>
-                  <p className="review-detail">{form.phone}{form.email ? ` Â· ${form.email}` : ''}</p>
+                  <p className="review-detail">{form.phone}{form.email ? ` · ${form.email}` : ''}</p>
                   <p className="review-detail">
                     {[form.street, form.area, form.landmark].filter(Boolean).join(', ')}
                   </p>
                   <p className="review-detail">
                     {[form.city, form.district, form.province].filter(Boolean).join(', ')}
-                    {form.postalCode ? ` â€” ${form.postalCode}` : ''}
+                    {form.postalCode ? ` – ${form.postalCode}` : ''}
                   </p>
                 </div>
 
@@ -382,8 +442,9 @@ export default function Checkout() {
                     <span>Payment Method</span>
                     <button className="edit-link" onClick={() => setStep(2)}>Edit</button>
                   </div>
-                  <p className="review-name">
-                    {PAYMENT_METHODS.find((m) => m.id === payment)?.icon} {payment}
+                  <p className="review-name" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span style={{ display: 'inline-flex' }}>{PaymentIcons[payment]}</span>
+                    {PAYMENT_METHODS.find((m) => m.id === payment)?.label}
                   </p>
                 </div>
 
@@ -403,7 +464,7 @@ export default function Checkout() {
                 </div>
 
                 <div className="step-nav">
-                  <button type="button" className="checkout-back-btn" onClick={() => setStep(2)}>â† Back</button>
+                  <button type="button" className="checkout-back-btn" onClick={() => setStep(2)}>&larr; Back</button>
                   <button
                     className="checkout-place-btn"
                     onClick={handlePlaceOrder}
@@ -454,4 +515,3 @@ export default function Checkout() {
     </div>
   );
 }
-

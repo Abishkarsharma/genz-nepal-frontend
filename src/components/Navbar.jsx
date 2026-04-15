@@ -51,24 +51,34 @@ export default function Navbar() {
       <nav className="navbar">
         <div className="container navbar-inner">
           <Link to="/" className="navbar-brand">
-            <svg className="brand-logo-svg" viewBox="0 0 100 100" width="38" height="38" xmlns="http://www.w3.org/2000/svg">
+            {/* Gen.Z Nepal Original Logo Mark */}
+            <svg className="brand-logo-svg" viewBox="0 0 48 48" width="42" height="42" xmlns="http://www.w3.org/2000/svg" aria-label="Gen.Z Nepal">
               <defs>
-                <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#f97316"/>
-                  <stop offset="40%" stopColor="#ec4899"/>
-                  <stop offset="70%" stopColor="#8b5cf6"/>
-                  <stop offset="100%" stopColor="#3b82f6"/>
+                <linearGradient id="gz-grad-main" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%"   stopColor="#0ea5e9"/>
+                  <stop offset="50%"  stopColor="#6366f1"/>
+                  <stop offset="100%" stopColor="#ec4899"/>
                 </linearGradient>
-                <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#06b6d4"/>
-                  <stop offset="50%" stopColor="#10b981"/>
-                  <stop offset="100%" stopColor="#84cc16"/>
+                <linearGradient id="gz-grad-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+                  <stop offset="0%"   stopColor="#10b981"/>
+                  <stop offset="100%" stopColor="#0ea5e9"/>
                 </linearGradient>
               </defs>
-              {/* Outer G shape - top-left arc */}
-              <path d="M50 8 C28 8 12 24 12 46 C12 68 28 84 50 84 C62 84 72 79 79 71 L79 52 L54 52 L54 62 L68 62 L68 68 C63 72 57 74 50 74 C34 74 22 62 22 46 C22 30 34 18 50 18 C58 18 65 21 70 27 L78 20 C71 13 61 8 50 8 Z" fill="url(#g1)"/>
-              {/* Inner G notch fill */}
-              <path d="M54 52 L79 52 L79 71 C75 76 70 80 64 82 L64 72 C67 70 70 67 71 64 L54 64 Z" fill="url(#g2)"/>
+              {/* Rounded square background */}
+              <rect x="1" y="1" width="46" height="46" rx="12" ry="12" fill="url(#gz-grad-main)"/>
+              {/* "G" letterform — bold, clean */}
+              <path
+                d="M24 10 C16.3 10 10 16.3 10 24 C10 31.7 16.3 38 24 38
+                   C28.2 38 31.9 36.2 34.5 33.3 L34.5 23 L23.5 23 L23.5 27
+                   L30 27 L30 31.2 C28.4 32.3 26.3 33 24 33
+                   C19 33 15 29 15 24 C15 19 19 15 24 15
+                   C26.6 15 28.9 16.1 30.5 17.9 L34.1 14.3
+                   C31.5 11.6 27.9 10 24 10 Z"
+                fill="white"
+              />
+              {/* "Z" accent slash — bottom-right corner */}
+              <rect x="29" y="29" width="14" height="14" rx="4" ry="4" fill="url(#gz-grad-accent)"/>
+              <text x="36" y="40" textAnchor="middle" fontSize="9" fontWeight="900" fontFamily="Arial,sans-serif" fill="white" letterSpacing="-0.5">Z</text>
             </svg>
             <div className="brand-text-wrap">
               <span className="brand-text-main">Gen.Z</span>
