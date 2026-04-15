@@ -1,20 +1,81 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import SearchBar from './SearchBar';
+import api from '../api';
 import './Navbar.css';
 
 export default function Navbar() {
   const { cartCount } = useCart();
-  const { user, logout, isAdmin, isSeller } = useAuth();
+  const { user, logout, isAdmin, isSeller, token } = useAuth();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [unread, setUnread] = useState(0);
+  const notifRef = useRef(null);
+
+  const loadNotifications = useCallback(() => {
+    if (!token) return;
+    api.get('/api/notifications', { headers: { Authorization: `Bearer ${token}` } })
+      .then(({ data }) => {
+        setNotifications(data);
+        setUnread(data.filter((n) => !n.read).length);
+      })
+      .catch(() => {});
+  }, [token]);
+
+  useEffect(() => {
+    if (!user) return;
+    loadNotifications();
+    const interval = setInterval(loadNotifications, 30000);
+    return () => clearInterval(interval);
+  }, [user, loadNotifications]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handler = (e) => {
+      if (notifRef.current && !notifRef.current.contains(e.target)) {
+        setNotifOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const toggleNotif = () => {
+    setNotifOpen((prev) => !prev);
+    if (!notifOpen && unread > 0) {
+      // Mark all as read when opening
+      api.patch('/api/notifications/read-all', {}, { headers: { Authorization: `Bearer ${token}` } })
+        .then(() => {
+          setUnread(0);
+          setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+        })
+        .catch(() => {});
+    }
+  };
 
   const handleLogout = () => {
     logout();
     navigate('/');
     setMenuOpen(false);
+  };
+
+  const notifIcon = (type) => {
+    if (type === 'new_order') return '🛒';
+    if (type === 'order_status') return '📦';
+    if (type === 'message') return '💬';
+    return '🔔';
+  };
+
+  const timeAgo = (date) => {
+    const diff = Math.floor((Date.now() - new Date(date)) / 1000);
+    if (diff < 60) return 'just now';
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+    return `${Math.floor(diff / 86400)}d ago`;
   };
 
   return (
@@ -64,9 +125,7 @@ export default function Navbar() {
                   <stop offset="100%" stopColor="#0ea5e9"/>
                 </linearGradient>
               </defs>
-              {/* Rounded square background */}
               <rect x="1" y="1" width="46" height="46" rx="12" ry="12" fill="url(#gz-grad-main)"/>
-              {/* "G" letterform — bold, clean */}
               <path
                 d="M24 10 C16.3 10 10 16.3 10 24 C10 31.7 16.3 38 24 38
                    C28.2 38 31.9 36.2 34.5 33.3 L34.5 23 L23.5 23 L23.5 27
@@ -76,7 +135,6 @@ export default function Navbar() {
                    C31.5 11.6 27.9 10 24 10 Z"
                 fill="white"
               />
-              {/* "Z" accent slash — bottom-right corner */}
               <rect x="29" y="29" width="14" height="14" rx="4" ry="4" fill="url(#gz-grad-accent)"/>
               <text x="36" y="40" textAnchor="middle" fontSize="9" fontWeight="900" fontFamily="Arial,sans-serif" fill="white" letterSpacing="-0.5">Z</text>
             </svg>
@@ -87,6 +145,66 @@ export default function Navbar() {
           </Link>
 
           <SearchBar />
+
+          {/* Notification Bell — shown for all logged-in users */}
+          {user && (
+            <div className="notif-wrap" ref={notifRef}>
+              <button
+                className="notif-bell-btn"
+                onClick={toggleNotif}
+                aria-label="Notifications"
+              >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+                {unread > 0 && (
+                  <span className="notif-badge">{unread > 9 ? '9+' : unread}</span>
+                )}
+              </button>
+
+              {/* Dropdown panel */}
+              {notifOpen && (
+                <div className="notif-dropdown">
+                  <div className="notif-dropdown-header">
+                    <span>Notifications</span>
+                    {notifications.length > 0 && (
+                      <span className="notif-count">{notifications.length}</span>
+                    )}
+                  </div>
+
+                  {notifications.length === 0 ? (
+                    <div className="notif-empty">
+                      <span>🔔</span>
+                      <p>No notifications yet</p>
+                    </div>
+                  ) : (
+                    <div className="notif-list">
+                      {notifications.slice(0, 15).map((n) => (
+                        <div
+                          key={n._id}
+                          className={`notif-item-row ${!n.read ? 'unread' : ''}`}
+                          onClick={() => {
+                            setNotifOpen(false);
+                            if (n.type === 'new_order' && (isSeller || isAdmin)) navigate('/seller');
+                            else if (n.type === 'new_order') navigate('/orders');
+                          }}
+                        >
+                          <div className="notif-item-icon">{notifIcon(n.type)}</div>
+                          <div className="notif-item-body">
+                            <p className="notif-item-title">{n.title}</p>
+                            <p className="notif-item-text">{n.body}</p>
+                            <p className="notif-item-time">{timeAgo(n.createdAt)}</p>
+                          </div>
+                          {!n.read && <span className="notif-unread-dot" />}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
 
           <Link to="/cart" className="cart-btn" aria-label="Cart">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
