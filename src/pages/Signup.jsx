@@ -47,18 +47,18 @@ export default function Signup() {
     setLoading(true);
     setError('');
 
-    // Timeout after 15 seconds — prevent infinite loading
-    const timeout = setTimeout(() => {
+    // Timeout after 45 seconds — Render cold start can take 30-50s
+    const timeoutId = setTimeout(() => {
       setLoading(false);
-      setError('Request timed out. The server may be starting up — please try again in 30 seconds.');
-    }, 15000);
+      setError('The server is waking up from sleep. Please wait 30 seconds and try again — this only happens once.');
+    }, 45000);
 
     try {
       await api.post('/api/auth/signup', form);
-      clearTimeout(timeout);
+      clearTimeout(timeoutId);
       setStep('otp');
     } catch (err) {
-      clearTimeout(timeout);
+      clearTimeout(timeoutId);
       const msg = err.response?.data?.message;
       if (msg?.includes('not configured')) {
         setError('Email service is not set up on the server. Contact the admin.');
@@ -68,7 +68,7 @@ export default function Signup() {
         setError(msg || 'Signup failed. Please try again.');
       }
     } finally {
-      clearTimeout(timeout);
+      clearTimeout(timeoutId);
       setLoading(false);
     }
   };
