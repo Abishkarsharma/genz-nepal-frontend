@@ -20,14 +20,10 @@ function EyeIcon({ open }) {
 }
 
 export default function Signup() {
-  const [step, setStep] = useState('form'); // 'form' | 'otp'
   const [form, setForm] = useState({ name: '', email: '', password: '', role: 'user' });
-  const [otp, setOtp] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [resendLoading, setResendLoading] = useState(false);
-  const [resendMsg, setResendMsg] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -47,117 +43,25 @@ export default function Signup() {
     setLoading(true);
     setError('');
 
-    // Timeout after 45 seconds — Render cold start can take 30-50s
     const timeoutId = setTimeout(() => {
       setLoading(false);
-      setError('The server is waking up from sleep. Please wait 30 seconds and try again — this only happens once.');
+      setError('The server is waking up. Please wait 30 seconds and try again.');
     }, 45000);
 
     try {
-      await api.post('/api/auth/signup', form);
+      const { data } = await api.post('/api/auth/signup', form);
       clearTimeout(timeoutId);
-      setStep('otp');
-    } catch (err) {
-      clearTimeout(timeoutId);
-      const msg = err.response?.data?.message;
-      if (msg?.includes('not configured')) {
-        setError('Email service is not set up on the server. Contact the admin.');
-      } else if (msg?.includes('Could not send')) {
-        setError('Could not send email to this address. Make sure it is a real Gmail account.');
-      } else {
-        setError(msg || 'Signup failed. Please try again.');
-      }
-    } finally {
-      clearTimeout(timeoutId);
-      setLoading(false);
-    }
-  };
-
-  const handleVerify = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    try {
-      const { data } = await api.post('/api/auth/verify-otp', { email: form.email, otp });
+      // Direct login — no OTP needed
       login(data.user, data.token);
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.message || 'Invalid or expired code. Please try again.');
+      clearTimeout(timeoutId);
+      setError(err.response?.data?.message || 'Signup failed. Please try again.');
     } finally {
+      clearTimeout(timeoutId);
       setLoading(false);
     }
   };
-
-  const handleResend = async () => {
-    setResendLoading(true);
-    setResendMsg('');
-    setError('');
-    try {
-      await api.post('/api/auth/signup', form);
-      setResendMsg('New code sent! Check your Gmail inbox.');
-      setOtp('');
-    } catch (err) {
-      setError(err.response?.data?.message || 'Failed to resend code');
-    } finally {
-      setResendLoading(false);
-    }
-  };
-
-  if (step === 'otp') {
-    return (
-      <div className="auth-page">
-        <div className="auth-card">
-          <div className="auth-otp-icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" strokeWidth="2">
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-              <polyline points="22,6 12,13 2,6"/>
-            </svg>
-          </div>
-          <h1 className="auth-title">Check your Gmail</h1>
-          <p className="auth-sub">
-            We sent a 6-digit code to <strong>{form.email}</strong>
-            <br />Check your inbox (and spam folder).
-          </p>
-          {error && <div className="alert alert-error">{error}</div>}
-          {resendMsg && <div className="alert alert-success">{resendMsg}</div>}
-          <form onSubmit={handleVerify}>
-            <div className="form-group">
-              <label>Verification Code</label>
-              <input
-                type="text"
-                inputMode="numeric"
-                placeholder="000000"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                className="otp-input"
-                maxLength={6}
-                autoFocus
-                required
-              />
-            </div>
-            <button
-              type="submit"
-              className="btn btn-primary auth-btn"
-              disabled={loading || otp.length < 6}
-            >
-              {loading ? 'Verifying...' : 'Verify & Create Account'}
-            </button>
-          </form>
-          <p className="auth-switch">
-            Didn't receive it?{' '}
-            <button className="link-btn" onClick={handleResend} disabled={resendLoading}>
-              {resendLoading ? 'Sending...' : 'Resend code'}
-            </button>
-          </p>
-          <p className="auth-switch">
-            <button className="link-btn" onClick={() => { setStep('form'); setError(''); setOtp(''); }}>
-              ← Use a different email
-            </button>
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="auth-page">
@@ -224,9 +128,9 @@ export default function Signup() {
             {loading ? (
               <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'center' }}>
                 <span className="btn-spinner" />
-                Sending code...
+                Creating account...
               </span>
-            ) : 'Continue →'}
+            ) : 'Create Account →'}
           </button>
         </form>
         <p className="auth-switch">Already have an account? <Link to="/login">Sign in</Link></p>
