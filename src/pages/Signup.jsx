@@ -46,12 +46,29 @@ export default function Signup() {
     if (validationError) { setError(validationError); return; }
     setLoading(true);
     setError('');
+
+    // Timeout after 15 seconds — prevent infinite loading
+    const timeout = setTimeout(() => {
+      setLoading(false);
+      setError('Request timed out. The server may be starting up — please try again in 30 seconds.');
+    }, 15000);
+
     try {
       await api.post('/api/auth/signup', form);
+      clearTimeout(timeout);
       setStep('otp');
     } catch (err) {
-      setError(err.response?.data?.message || 'Signup failed. Please try again.');
+      clearTimeout(timeout);
+      const msg = err.response?.data?.message;
+      if (msg?.includes('not configured')) {
+        setError('Email service is not set up on the server. Contact the admin.');
+      } else if (msg?.includes('Could not send')) {
+        setError('Could not send email to this address. Make sure it is a real Gmail account.');
+      } else {
+        setError(msg || 'Signup failed. Please try again.');
+      }
     } finally {
+      clearTimeout(timeout);
       setLoading(false);
     }
   };
@@ -204,7 +221,12 @@ export default function Signup() {
             className="btn btn-primary auth-btn"
             disabled={loading}
           >
-            {loading ? 'Sending verification code...' : 'Continue →'}
+            {loading ? (
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'center' }}>
+                <span className="btn-spinner" />
+                Sending code...
+              </span>
+            ) : 'Continue →'}
           </button>
         </form>
         <p className="auth-switch">Already have an account? <Link to="/login">Sign in</Link></p>
