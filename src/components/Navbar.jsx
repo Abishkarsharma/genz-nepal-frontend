@@ -227,6 +227,9 @@ export default function Navbar() {
       {/* Mobile menu */}
       {menuOpen && (
         <div className="mobile-menu">
+          <div className="mobile-search-row">
+            <SearchBar />
+          </div>
           <Link to="/" onClick={() => setMenuOpen(false)}>Home</Link>
           {user ? (
             <>

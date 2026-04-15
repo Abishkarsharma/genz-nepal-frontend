@@ -530,8 +530,57 @@
   }
 }
 
+@media (max-width: 640px) {
+  .checkout-wrap {
+    padding: 1rem 0.75rem 2.5rem;
+  }
 
-/* ── Seller payment info (shown in checkout for digital payments) ── */
+  .checkout-progress {
+    padding: 1rem;
+  }
+
+  .progress-step {
+    font-size: 0.65rem;
+  }
+
+  .progress-dot {
+    width: 22px;
+    height: 22px;
+    font-size: 0.65rem;
+  }
+
+  .checkout-section {
+    padding: 1.1rem;
+  }
+
+  .section-title {
+    font-size: 0.9rem;
+  }
+
+  .step-nav {
+    flex-direction: column;
+  }
+
+  .checkout-back-btn {
+    order: 2;
+    width: 100%;
+    text-align: center;
+  }
+
+  .checkout-next-btn,
+  .checkout-place-btn {
+    order: 1;
+    width: 100%;
+    padding: 0.85rem;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .payment-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
 .seller-payment-info {
   background: #f0fdf4;
   border: 1.5px solid #bbf7d0;

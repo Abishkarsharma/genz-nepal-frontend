@@ -337,3 +337,67 @@
   .detail-name { font-size: 1.2rem; }
   .detail-price-main { font-size: 1.4rem; }
 }
+
+@media (max-width: 640px) {
+  .detail-page {
+    padding: 1rem 0.75rem 2.5rem;
+  }
+
+  .detail-name {
+    font-size: 1.1rem;
+  }
+
+  .detail-price-main {
+    font-size: 1.25rem;
+  }
+
+  .detail-actions {
+    flex-direction: column;
+  }
+
+  .detail-add-btn {
+    width: 100%;
+    min-width: unset;
+    padding: 0.85rem;
+    font-size: 0.95rem;
+  }
+
+  .detail-buy-btn {
+    padding: 0.85rem;
+    font-size: 0.95rem;
+  }
+
+  .detail-trust {
+    gap: 0.75rem;
+  }
+
+  .detail-tabs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .detail-tabs::-webkit-scrollbar { display: none; }
+
+  .detail-tab {
+    flex-shrink: 0;
+    padding: 0.6rem 1rem;
+    font-size: 0.82rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .detail-ratings-row {
+    gap: 0.5rem;
+  }
+
+  .detail-sold {
+    padding-left: 0;
+    border-left: none;
+  }
+
+  .specs-table td {
+    padding: 0.5rem;
+    font-size: 0.82rem;
+  }
+}

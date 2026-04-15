@@ -22,6 +22,9 @@
 
 html {
   scroll-behavior: smooth;
+  /* Prevent font size inflation on mobile */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -29,8 +32,17 @@ body {
   background: var(--bg);
   color: var(--text);
   line-height: 1.5;
+  font-size: 16px; /* base for rem calculations */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Prevent horizontal overflow on all screens */
+  overflow-x: hidden;
+}
+
+/* Ensure images never overflow their containers */
+img {
+  max-width: 100%;
+  height: auto;
 }
 
 /* Remove tap highlight on all interactive elements */
@@ -237,6 +249,15 @@ label {
   .product-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.5rem;
+  }
+
+  /* Ensure minimum readable font size on mobile */
+  body {
+    font-size: 14px;
+  }
+
+  .container {
+    padding: 0 0.75rem;
   }
 }
 

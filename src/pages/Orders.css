@@ -666,3 +666,71 @@
   background: #fca5a5;
   cursor: not-allowed;
 }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .orders-wrap {
+    padding: 1rem 0 2.5rem;
+  }
+
+  .tracker {
+    padding: 0.5rem 0.75rem 0.75rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tracker-label {
+    font-size: 0.6rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .order-card-top {
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    padding: 0.75rem;
+  }
+
+  .order-card-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .order-details {
+    padding: 0.75rem;
+  }
+
+  .order-detail-item {
+    flex-wrap: wrap;
+  }
+
+  .order-detail-item-total {
+    margin-left: auto;
+  }
+
+  /* Cancel modal: full screen on mobile */
+  .cancel-modal-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .cancel-modal {
+    border-radius: 16px 16px 0 0;
+    max-height: 92vh;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .orders-header {
+    flex-wrap: wrap;
+  }
+
+  .order-items-preview {
+    padding: 0 0.75rem 0.6rem;
+  }
+
+  .cancel-reason-display {
+    margin: 0 0.75rem 0.6rem;
+  }
+}

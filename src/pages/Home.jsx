@@ -1,8 +1,7 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import api from '../api';
 import ProductCard from '../components/ProductCard';
-import ImageSearch from '../components/ImageSearch';
 import './Home.css';
 
 const CATEGORIES = ['All', 'Electronics', 'Accessories', 'Home', 'Stationery', 'Wellness'];
@@ -94,11 +93,6 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </section>
-
-      {/* Visual Image Search */}
-      <section className="container barcode-section">
-        <ImageSearch />
       </section>
 
       {/* Category tabs — top of products */}
